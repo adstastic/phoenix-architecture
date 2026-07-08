@@ -1,0 +1,10 @@
+{
+  "name": "regenerative-sdlc",
+  "version": "0.1.0",
+  "description": "Phoenix Architecture discipline for AI coding agents: specs, evals, boundaries, and provenance as durable artifacts.",
+  "author": {
+    "name": "Adi"
+  },
+  "repository": "https://github.com/adstastic/regenerative-sdlc",
+  "keywords": ["phoenix", "regenerative-software", "sdlc"]
+}
