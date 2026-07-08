@@ -1,17 +1,17 @@
 {
-  "name": "regenerative-sdlc",
-  "version": "0.1.0",
-  "description": "Phoenix Architecture discipline for AI coding agents: specs, evals, boundaries, and provenance as durable artifacts.",
+  "name": "phoenix-architecture",
+  "version": "0.1.1",
+  "description": "Phoenix Architecture discipline for AI coding agents, inspired by Chad Fowler: specs, evals, boundaries, and provenance as durable artifacts.",
   "keywords": [
     "pi-package",
     "agent-skills",
-    "phoenix",
+    "phoenix-architecture",
     "regenerative-software",
     "sdlc"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/adstastic/regenerative-sdlc.git"
+    "url": "git+https://github.com/adstastic/phoenix-architecture.git"
   },
   "pi": {
     "skills": ["./skills"]

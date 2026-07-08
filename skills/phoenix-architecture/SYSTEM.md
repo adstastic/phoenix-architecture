@@ -1,10 +1,10 @@
 # SYSTEM
 
-> Scope note: this file describes **the regenerative-sdlc skill itself** — it is the skill
+> Scope note: this file describes **the phoenix-architecture skill itself** — it is the skill
 > dogfooding its own state protocol. It is not the SYSTEM.md of any repo you are working in.
 
 ## Map
-One component: the `regenerative-sdlc` skill — a single always-loaded SKILL.md plus self-hosting
+One component: the `phoenix-architecture` skill — a single always-loaded SKILL.md plus self-hosting
 siblings (CLAIMS.md its spec, drills.md its evals, improve.md its regeneration procedure).
 Consumers: coding agents in Claude Code, pi, and Codex (any harness implementing the Agent Skills
 standard). Pace layer: **slow** — its blast radius is every future session, so changes require an
@@ -69,6 +69,11 @@ Clauses: I1.
 Chose: Agent Skills standard folder + thin Claude Code plugin manifest. Rejected: per-harness
 builds. Because: Claude Code, pi, and Codex all implement the same SKILL.md standard (verified
 2026-07-08); one artifact, three installs. Clauses: Contracts.
+### D-008 — 2026-07-08 — Rename package to Phoenix Architecture
+Chose: `phoenix-architecture` for repo, package, plugin, and skill names. Rejected:
+`regenerative-sdlc` as too bland and under-attributed, and `phoenix` as overloaded. Because: the
+name should point to Chad Fowler's Phoenix Architecture while remaining specific enough for package
+and skill discovery. Clauses: Contracts.
 
 ## Ledger (review every boot of the improvement loop)
 | ID   | Type       | Statement                                                                  | Check by   | Status |

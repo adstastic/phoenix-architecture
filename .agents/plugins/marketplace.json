@@ -5,7 +5,7 @@
   },
   "plugins": [
     {
-      "name": "regenerative-sdlc",
+      "name": "phoenix-architecture",
       "source": {
         "source": "local",
         "path": "./"

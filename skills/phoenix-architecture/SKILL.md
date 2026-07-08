@@ -1,9 +1,9 @@
 ---
-name: regenerative-sdlc
+name: phoenix-architecture
 description: >-
-  Full-lifecycle discipline for building software with AI coding agents, from Chad Fowler's
-  "Phoenix Architecture" (regenerative software). Premise: when code is cheap to generate it stops
-  being the asset — specs, evaluations, contracts, provenance, and data are the durable artifacts;
+  Phoenix Architecture discipline for building software with AI coding agents, inspired by Chad
+  Fowler's regenerative software writing. Premise: when code is cheap to generate it stops being
+  the asset — specs, evaluations, contracts, provenance, and data are the durable artifacts;
   implementations are regenerated, not patched. Also defines SYSTEM.md, the state file fresh agents
   read on arrival and update on exit. Use whenever specifying or planning software, clarifying
   requirements, interrogating vague or solution-shaped requests, extracting tribal knowledge,
@@ -13,7 +13,7 @@ description: >-
   "regenerative" or "Phoenix".
 ---
 
-# Regenerative SDLC — Seed
+# Phoenix Architecture — Seed
 
 This is a deliberately minimal seed: one skill file plus one state file per repo (`SYSTEM.md`). It
 is designed to be iterated — it carries its own evolution rules (end of file) and is subject to its

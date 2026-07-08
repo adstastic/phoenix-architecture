@@ -6,15 +6,15 @@
   },
   "plugins": [
     {
-      "name": "regenerative-sdlc",
+      "name": "phoenix-architecture",
       "source": "./",
-      "description": "Phoenix Architecture discipline for AI coding agents.",
-      "version": "0.1.0",
+      "description": "Phoenix Architecture discipline for AI coding agents, inspired by Chad Fowler.",
+      "version": "0.1.1",
       "author": {
         "name": "Adi"
       },
-      "repository": "https://github.com/adstastic/regenerative-sdlc",
-      "keywords": ["phoenix", "regenerative-software", "sdlc"],
+      "repository": "https://github.com/adstastic/phoenix-architecture",
+      "keywords": ["phoenix-architecture", "regenerative-software", "sdlc"],
       "category": "productivity"
     }
   ]
