@@ -53,7 +53,9 @@ What this software is and for whom. One line per component: purpose, pace, and
 pointer to detailed state. In a monorepo this file is an index, not a duplicate.
 
 ## Spec
-Use namespaced stable IDs (PAY-R1, PAY-I1, PAY-E1); Oracles reference them.
+Use owner-based stable IDs: `BOUNDARY-<OWNER>`, `CLAIM-<OWNER>-<NNN>`,
+`ORACLE-<OWNER>-<NNN>`, `D-<OWNER>-<NNN>`. Titles carry meaning; release, date, horizon,
+and pace are metadata, never identity. Oracles reference Claims explicitly.
 ### Requirements / Invariants / Operational envelope / Non-goals / Scar tissue
 Observable Claims; UNKNOWN-ORIGIN behavior stays pinned by characterization.
 ### Contracts
@@ -66,7 +68,8 @@ Dataset | sole writer | durability | migration/retention contract
 Oracle | rendering/commit | result | observed at | valid until | invalidates
 
 ## Decisions
-Links to dated ADRs/decision records; keep only current summary here.
+Group by owning component/Boundary. Record status, horizon, applicability, pace, revisit trigger,
+supersession, chose/rejected/because; keep only current summary here.
 
 ## Ledger
 ID | assumption/planned/drift | statement | check by | status
@@ -84,8 +87,8 @@ a cache — enforcement lives in Oracles and Evidence.
    rollback. Each logical dataset has one writer; shared mutation is a boundary bug.
 3. **Grill proportionally.** Extract only context the repo cannot answer. Route durable yield into
    Claims, fixtures, Decisions, or the Ledger; do not turn reversible work into process theater.
-4. **Specify.** Give changed durable Claims namespaced IDs. Each needs a deterministic, live, or
-   explicit human-review Oracle; otherwise mark it as an assumption or aspiration.
+4. **Specify.** Give changed durable Claims owner-based stable IDs. Each needs a deterministic,
+   live, or explicit human-review Oracle; otherwise mark it as an assumption or aspiration.
 5. **Evals first.** Add the smallest Oracle that fails for the changed Claim, then change the
    Rendering. Implementation-coupled tests are fine; durable Claims also need boundary-level gates.
 6. **Choose change mode.** Patch mature or slow-layer Renderings. Regenerate only a bounded grain

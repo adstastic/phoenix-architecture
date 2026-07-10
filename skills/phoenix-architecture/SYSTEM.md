@@ -21,8 +21,8 @@ R4. Any source migration preserves exact source bytes, hashes them, maps every s
     and calls out notable semantic transformations with no silent drops.
 R5. Existing durable state (`.phoenix/`, ADRs, specs/evals, or equivalent) is adopted rather than
     copied into a competing SYSTEM.md.
-R6. Repo state makes data ownership and dated Evidence first-class; namespaced IDs work in
-    monorepos.
+R6. Repo state makes data ownership and dated Evidence first-class; stable IDs encode record type
+    and owner while release, date, horizon, and pace remain metadata.
 ### Invariants
 I1. Skill changes are slow-layer: source-fidelity-gated, explicit about behavioral uncertainty,
     human-signed, and recorded as a Decision here.
@@ -100,6 +100,12 @@ once compressed, relying on Git reachability alone, or treating one model run as
 semantic equivalence is not mechanically provable, but irrecoverable source loss and unmapped units
 are preventable. Human decision: preserve fidelity and data under future automated migrations.
 Clauses: R3, R4, I1, I3, I4.
+### D-011 — 2026-07-10 — Owner-based IDs; release and pace are metadata
+Chose: `TYPE-OWNER-NNN` IDs, component-owned Decision files, stable Oracle catalogs, and separate
+release manifests. Rejected: date-named Decision files and IDs containing release-specific topic
+slugs such as `ORACLE-R1-NATIVE-001`. Because: identity must survive wording and release changes;
+owner is the stable retrieval axis, while applicability, horizon, pace, and revisit triggers change
+independently. Human decision: simplify and harden the migrated state convention. Clauses: R6.
 
 ## Ledger (review every boot of the improvement loop)
 | ID   | Type       | Statement                                                                  | Check by   | Status |

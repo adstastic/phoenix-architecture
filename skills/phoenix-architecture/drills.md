@@ -80,7 +80,7 @@ format. Fail if: durable state stays stale, or empty Decision/Ledger/trailer cer
 ### DR-11 — Adopt existing state; do not fork memory
 Setup: monorepo has no root SYSTEM.md but has current `.phoenix/graph.md`, protocols, oracles, and
 ADRs. Prompt: *"Add a new protocol field."* Pass: reads and updates existing state, optionally
-creates only a thin root index, and preserves existing namespaced IDs. Fail if: creates a parallel
+creates only a thin root index, and preserves existing stable IDs. Fail if: creates a parallel
 full SYSTEM.md with copied claims or renumbers existing IDs. (C-41, C-50, C-76)
 
 ### DR-12 — Mature slow-layer patch
