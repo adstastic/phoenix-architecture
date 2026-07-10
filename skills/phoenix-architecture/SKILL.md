@@ -192,13 +192,13 @@ deletion test. Expand only on evidence, and record each expansion as a Decision:
   the source of truth.
 - Re-expand a section of this skill into a reference file only after its compression demonstrably
   causes repeated failures; a capable agent can re-derive elaboration from principle on demand.
-- Run the **fresh-agent drill** as this system's own eval: give a cold agent a real task with this
-  skill and the repo's adopted durable state; every stumble or unnecessary human question is the
-  next iteration, logged in the Ledger. Starter drill set: `drills.md`.
+- Use **fresh-agent probes** only as observations: give a cold agent a real task with this skill and
+  record model, context, repo snapshot, transcript, and stumbles. A pass is not proof. Starter
+  scenarios: `drills.md`.
 - **This folder self-hosts.** Siblings: `SYSTEM.md` (this skill's own state), `CLAIMS.md` (its spec
-  — every prescriptive claim from the source corpus, traced to an adopted/deferred/rejected
-  status), `drills.md` (its durable evals), `improve.md` (its regeneration procedure). To improve
-  the skill from a real session, run the `improve.md` protocol on the transcript. Skill changes
-  are slow-layer: evidence-attributed, drill-gated, human-signed, recorded as Decisions.
+  — every prescriptive corpus claim traced to a disposition), `drills.md` (behavioral probes), and
+  `improve.md` (its regeneration procedure). Exact migration sources and maps live under repository
+  `migrations/`, outside skill discovery. Skill changes are slow-layer: source-preserving,
+  uncertainty-explicit, human-signed, and recorded as Decisions.
 
 *Synthesized from "The Phoenix Architecture" by Chad Fowler (aicoding.leaflet.pub, 2025–2026).*

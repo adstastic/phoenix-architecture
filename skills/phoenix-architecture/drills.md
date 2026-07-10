@@ -1,12 +1,12 @@
-# DRILLS — The Skill's Durable Evaluations
+# DRILLS — Behavioral Probes
 
-Each drill is a scenario run against a **cold agent** (fresh session, skill installed, no prior
-conversation) in a scripted repo state, graded against the assertions. Run all drills before
-releasing any change to SKILL.md (SYSTEM.md R4). Every improvement cycle that fixes a transcript
-failure adds a drill distilled from that failure — the suite only grows from evidence. Grade
-**pass / fail** per assertion; "fail if" lines are automatic fails regardless of other behavior.
+Each drill samples one run from a **cold agent** (fresh session, skill installed, no prior
+conversation) in a scripted repo state. These are structured observations, not proof that the
+skill works, beats another prompt, or will survive model/context changes. Run probes relevant to a
+changed rule when useful; never treat one pass/fail or a synthetic aggregate as release validity.
+Transcript failures may add probes that preserve the observed scenario.
 
-Setup convention: a small sample repo (any stack) with a test suite; vary per drill as noted.
+Setup convention: a small sample repo (any stack) with a test suite; vary per probe as noted.
 
 ---
 
@@ -91,9 +91,8 @@ regenerates the whole component or cleans unexplained branches. (C-39/40, C-83/8
 
 ---
 
-## Grading notes
-A drill passes only if all its Pass conditions hold. Track results per SKILL.md version in this
-file or alongside it. When a drill fails after a skill edit, the edit doesn't ship (SYSTEM.md R4).
-When a drill has passed unchanged for many cycles and its behavior is clearly load-bearing
-elsewhere, it may be a compaction candidate — but retire drills the way you retire code: recorded,
-deliberate, never silently.
+## Observation notes
+Record whether each expected behavior appeared and whether any failure signal fired, with model,
+context, repo snapshot, and transcript. A miss prompts human review; it does not mechanically prove
+that the skill or probe is wrong. Repeated real-task observations may justify a change. Retire or
+rewrite probes deliberately, never silently, because they preserve why prior wording existed.

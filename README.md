@@ -15,6 +15,7 @@ The core artifact is one standards-compliant Agent Skill at `skills/phoenix-arch
 .agents/plugins/marketplace.json    Codex marketplace catalog
 package.json                        Pi package manifest
 skills/phoenix-architecture/        Shared Agent Skill
+migrations/legacy-phoenix-v1/       Inert legacy source, hashes, and fidelity map
 ```
 
 ## Install
@@ -65,7 +66,7 @@ skills/phoenix-architecture/
   SKILL.md     runtime seed
   SYSTEM.md    skill state: spec, decisions, ledger
   CLAIMS.md    corpus claim inventory
-  drills.md    cold-agent eval scenarios
+  drills.md    cold-agent behavioral probes
   improve.md   transcript-driven improvement protocol
 ```
 
@@ -74,4 +75,16 @@ skills/phoenix-architecture/
 1. Work normally with the skill.
 2. Export a session transcript.
 3. Ask a fresh agent to run `skills/phoenix-architecture/improve.md` on the transcript.
-4. Record evidence, add/adjust drills, make minimal skill edits, validate, tag release.
+4. Preserve source bytes/maps for migrations, make minimal skill edits, record uncertainty, and get
+   human review.
+5. Treat behavioral probes as observations, not proof; validate package structure, then tag release.
+
+## Migration fidelity
+
+The legacy installed skill remains byte-for-byte recoverable outside `skills/` so harnesses cannot
+discover it as a second live skill. Verify archive hashes, complete file/heading mapping, notable
+semantic markers, and target existence with:
+
+```bash
+node migrations/legacy-phoenix-v1/check.mjs
+```

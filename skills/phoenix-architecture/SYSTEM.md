@@ -5,7 +5,7 @@
 
 ## Map
 One component: the `phoenix-architecture` skill — a single always-loaded SKILL.md plus self-hosting
-siblings (CLAIMS.md its spec, drills.md its evals, improve.md its regeneration procedure).
+siblings (CLAIMS.md its spec, drills.md its behavioral probes, improve.md its regeneration procedure).
 Consumers: coding agents in Claude Code, pi, and Codex (any harness implementing the Agent Skills
 standard). Pace layer: **slow** — its blast radius is every future session, so changes require an
 explicit human decision.
@@ -17,20 +17,22 @@ R1. A cold agent with only SKILL.md, a target repo, and a human must complete th
 R2. SKILL.md loads whole when triggered; frontmatter description ≤1024 chars.
 R3. Every prescriptive corpus claim in CLAIMS.md carries a status (adopted / partial / deferred /
     rejected / context); no silent drops.
-R4. All drills in drills.md pass before any released change to SKILL.md.
+R4. Any source migration preserves exact source bytes, hashes them, maps every source file/heading,
+    and calls out notable semantic transformations with no silent drops.
 R5. Existing durable state (`.phoenix/`, ADRs, specs/evals, or equivalent) is adopted rather than
     copied into a competing SYSTEM.md.
 R6. Repo state makes data ownership and dated Evidence first-class; namespaced IDs work in
     monorepos.
 ### Invariants
-I1. Skill changes are slow-layer: evidence-attributed, drill-gated, human-signed, recorded as a
-    Decision here.
+I1. Skill changes are slow-layer: source-fidelity-gated, explicit about behavioral uncertainty,
+    human-signed, and recorded as a Decision here.
 I2. No speculative rules: every addition cites a transcript event or drill failure (first
     occurrence → Ledger watch; second → change). Corpus fidelity gaps count as evidence via CLAIMS.
-I3. SKILL.md is the implementation; CLAIMS.md + Decisions + drills.md are the durable layer.
-    SKILL.md should be regenerable from them (this skill's own deletion test).
-I4. Deletions from SKILL.md respect load-bearing marks: lines exercised by drills or "worked"
-    transcript events are protected from compaction.
+I3. SKILL.md is the implementation; CLAIMS.md, Decisions, source archives/maps, and observed
+    transcripts are the durable layer. SKILL.md should be regenerable from them (this skill's own
+    deletion test).
+I4. Deletions from SKILL.md respect load-bearing marks: repeated "worked" transcript events and
+    behavioral probes are review signals, never proof by themselves.
 I5. State and provenance updates are proportional: tiny or already-covered work creates no empty
     Decision, Ledger, or trailer ceremony.
 ### Operational envelope
@@ -42,8 +44,8 @@ contract with all harnesses. Repo-facing contract: durable-state adoption rules,
 template, and repo-selected provenance forms defined in SKILL.md — changing them is a boundary
 change for every repo using the skill.
 ### Non-goals
-Bundling the source essays (claims + URLs only). Harness-specific features. CI enforcement of the
-skill's own rules (revisit per growth rules). Prescribing models or tools.
+Bundling the source essays (claims + URLs only). Harness-specific features. Claiming behavioral
+correctness from prompt probes. Prescribing models or tools.
 ### Scar tissue
 None yet — v0.1 has no production incidents. Expected to populate via improve.md.
 
@@ -91,6 +93,13 @@ Because: review against the complete source corpus and a 2,767-line production `
 showed duplicate-memory risk, missing Evidence/data structure, and conflict between early immutable-
 code rhetoric and the later Implementation Remembers warning. Human decision: requested directly
 in the 2026-07-10 review session. Clauses: R5, R6, I5, C-31, C-39, C-40, C-79, C-83.
+### D-010 — 2026-07-10 — Preserve migration sources; treat drills as probes
+Chose: archive the exact legacy skill bytes with SHA-256 hashes, a complete heading-level map, and
+explicit semantic-change markers; use drills only as behavioral observations. Rejected: deleting the old capture
+once compressed, relying on Git reachability alone, or treating one model run as proof. Because:
+semantic equivalence is not mechanically provable, but irrecoverable source loss and unmapped units
+are preventable. Human decision: preserve fidelity and data under future automated migrations.
+Clauses: R3, R4, I1, I3, I4.
 
 ## Ledger (review every boot of the improvement loop)
 | ID   | Type       | Statement                                                                  | Check by   | Status |
@@ -106,5 +115,5 @@ in the 2026-07-10 review session. Clauses: R5, R6, I5, C-31, C-39, C-40, C-79, C
 | L-9  | watch      | Multi-candidate generation, multi-representation specs, LLM-as-judge (C-72/73/75) | 2026-10-08 | open |
 | L-10 | watch      | Boundary-change protocol: additive, versioned, slow deprecation (C-78)      | 2026-10-08 | open |
 | L-11 | watch      | Implementation graph + selective invalidation (C-82)                        | 2026-10-08 | open |
-| L-12 | planned    | Run revised DR-01…DR-12 against real repos before releasing v0.1.2        | 2026-08-08 | open |
+| L-12 | superseded | Mandatory drill gate overstated prompt certainty; D-010 makes drills probes | 2026-07-10 | closed |
 | L-13 | assumption | ~3K tokens on non-trivial triggers is net-positive — verify via waste events in transcripts | 2026-10-08 | open |
