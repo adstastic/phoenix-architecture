@@ -23,11 +23,11 @@ or the review output):
 compaction must protect, per SYSTEM.md I4).
 
 **Attributions:** `skill-content` (rule missing or wrong) · `skill-salience` (rule present but
-not noticed/followed) · `repo-system-md` (target repo's state file was stale or thin) · `model`
-(capability limit) · `human` (input error/withheld context) · `hard-task` (genuinely difficult;
-no process fix). Attribute honestly — the loop dies if the skill absorbs blame for everything,
-bloating with rules about one-off quirks. Only `skill-content` and `skill-salience` events may
-drive SKILL.md changes.
+not noticed/followed) · `repo-state` (target repo's adopted durable state was stale, thin, or
+forked) · `model` (capability limit) · `human` (input error/withheld context) · `hard-task`
+(genuinely difficult; no process fix). Attribute honestly — the loop dies if the skill absorbs
+blame for one-off quirks. Only skill-attributed events, or repeated `repo-state` failures caused by
+the generic boot/template contract, may drive SKILL.md changes.
 
 ## Step 2 — Route each skill-attributed event
 
@@ -38,7 +38,8 @@ drive SKILL.md changes.
 - `skill-salience` events get salience fixes, not more words: reword for punch, move earlier,
   promote from a subsection into the work loop or safety rails, or add a trigger phrase to the
   frontmatter description. Adding length to fix salience usually worsens it.
-- `repo-system-md` events → improve the SYSTEM.md template or boot protocol text, same rules.
+- `repo-state` events → fix the target repo state; change the generic state template/boot rule only
+  when the same failure recurs across repos.
 - `impedance` events → generalize the prescription (e.g., "shadow or canary" → "compare against
   the incumbent by whatever means the environment allows") rather than adding environment
   special-cases.

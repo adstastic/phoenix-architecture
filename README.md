@@ -49,7 +49,7 @@ ln -s "$(pwd)/skills/phoenix-architecture" ~/.agents/skills/phoenix-architecture
 ### Pi
 
 ```bash
-pi install git:github.com/adstastic/phoenix-architecture@v0.1.1
+pi install git:github.com/adstastic/phoenix-architecture@v0.1.2
 ```
 
 For local development:

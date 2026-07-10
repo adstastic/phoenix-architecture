@@ -18,6 +18,10 @@ R2. SKILL.md loads whole when triggered; frontmatter description ≤1024 chars.
 R3. Every prescriptive corpus claim in CLAIMS.md carries a status (adopted / partial / deferred /
     rejected / context); no silent drops.
 R4. All drills in drills.md pass before any released change to SKILL.md.
+R5. Existing durable state (`.phoenix/`, ADRs, specs/evals, or equivalent) is adopted rather than
+    copied into a competing SYSTEM.md.
+R6. Repo state makes data ownership and dated Evidence first-class; namespaced IDs work in
+    monorepos.
 ### Invariants
 I1. Skill changes are slow-layer: evidence-attributed, drill-gated, human-signed, recorded as a
     Decision here.
@@ -27,13 +31,16 @@ I3. SKILL.md is the implementation; CLAIMS.md + Decisions + drills.md are the du
     SKILL.md should be regenerable from them (this skill's own deletion test).
 I4. Deletions from SKILL.md respect load-bearing marks: lines exercised by drills or "worked"
     transcript events are protected from compaction.
+I5. State and provenance updates are proportional: tiny or already-covered work creates no empty
+    Decision, Ledger, or trailer ceremony.
 ### Operational envelope
 E1. SKILL.md ≤ 250 lines (~3K tokens always-in-context on trigger). On breach: shed
     deliberate-procedure content to a reference file; reactive invariants stay inline (D-005).
 ### Contracts
 The Agent Skills standard (SKILL.md folder, name+description frontmatter) is the distribution
-contract with all harnesses. Repo-facing contract: the SYSTEM.md template and Why-trailer format
-defined in SKILL.md — changing either is a boundary change for every repo using the skill.
+contract with all harnesses. Repo-facing contract: durable-state adoption rules, SYSTEM.md index
+template, and repo-selected provenance forms defined in SKILL.md — changing them is a boundary
+change for every repo using the skill.
 ### Non-goals
 Bundling the source essays (claims + URLs only). Harness-specific features. CI enforcement of the
 skill's own rules (revisit per growth rules). Prescribing models or tools.
@@ -74,6 +81,16 @@ Chose: `phoenix-architecture` for repo, package, plugin, and skill names. Reject
 `regenerative-sdlc` as too bland and under-attributed, and `phoenix` as overloaded. Because: the
 name should point to Chad Fowler's Phoenix Architecture while remaining specific enough for package
 and skill discovery. Clauses: Contracts.
+### D-009 — 2026-07-10 — Adopt existing state and calibrate regeneration
+Chose: treat SYSTEM.md as an optional thin index over existing durable state; restore
+Claim/Boundary/Oracle/Rendering/Evidence vocabulary; require data ownership and full Evidence
+fields; patch mature/slow Renderings and regenerate only bounded, oracle-covered grains; make state
+updates and provenance format proportional. Rejected: unconditional SYSTEM.md creation, whole-suite
+boot checks, regeneration-first edits, and mandatory Decision/Ledger/Why records for every change.
+Because: review against the complete source corpus and a 2,767-line production `.phoenix/` state
+showed duplicate-memory risk, missing Evidence/data structure, and conflict between early immutable-
+code rhetoric and the later Implementation Remembers warning. Human decision: requested directly
+in the 2026-07-10 review session. Clauses: R5, R6, I5, C-31, C-39, C-40, C-79, C-83.
 
 ## Ledger (review every boot of the improvement loop)
 | ID   | Type       | Statement                                                                  | Check by   | Status |
@@ -89,5 +106,5 @@ and skill discovery. Clauses: Contracts.
 | L-9  | watch      | Multi-candidate generation, multi-representation specs, LLM-as-judge (C-72/73/75) | 2026-10-08 | open |
 | L-10 | watch      | Boundary-change protocol: additive, versioned, slow deprecation (C-78)      | 2026-10-08 | open |
 | L-11 | watch      | Implementation graph + selective invalidation (C-82)                        | 2026-10-08 | open |
-| L-12 | planned    | Run the full drill set (drills.md) against a real repo with a cold agent    | 2026-08-08 | open |
-| L-13 | assumption | ~3K tokens always-loaded is net-positive vs. on-demand loading — verify via waste events in transcripts | 2026-10-08 | open |
+| L-12 | planned    | Run revised DR-01…DR-12 against real repos before releasing v0.1.2        | 2026-08-08 | open |
+| L-13 | assumption | ~3K tokens on non-trivial triggers is net-positive — verify via waste events in transcripts | 2026-10-08 | open |

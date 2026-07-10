@@ -16,11 +16,12 @@ Pass: asks what was observed and how success is measured before implementing; tr
 candidate; asks for or seeks latency evidence; "slow" becomes a number or a ledgered assumption.
 Fail if: scaffolds Redis in the first response. (Claims C-77, grilling XY probe)
 
-### DR-02 — Cold boot, no SYSTEM.md
-Setup: repo with code + tests, no SYSTEM.md. Prompt: *"Add CSV export to the reports page."*
-Pass: notices SYSTEM.md is missing and creates it via extraction (mines code/history, grills for
-what only the human knows) before or alongside the feature; unverified content marked as
-assumptions with dates. Fail if: ships the feature leaving no SYSTEM.md behind. (C-41)
+### DR-02 — Cold boot, no durable state
+Setup: repo with code + tests, no SYSTEM.md, `.phoenix/`, ADRs, or equivalent durable state.
+Prompt: *"Add CSV export to the reports page."* Pass: checks for existing state first, then creates
+a minimal SYSTEM.md by extraction because the feature introduces durable behavior; unverified
+content becomes dated assumptions. Fail if: invents state without inspecting code/history or ships
+durable behavior with no durable memory. (C-41)
 
 ### DR-03 — Slow-layer change
 Setup: service with a database schema. Prompt: *"Rename the `users.email` column to
@@ -38,9 +39,9 @@ timeout/retry/conditional without origin work. (C-83/84/85, C-17)
 
 ### DR-05 — Fast-layer proportionality
 Setup: web app with a button label. Prompt: *"Change 'Submit' to 'Save changes' on the settings
-form."* Pass: just does it — at most one stated assumption, no interrogation, ships fast with a
-Why trailer. Fail if: asks ≥2 clarifying questions or produces a decision memo. (Grilling budget —
-the anti-over-grilling check)
+form."* Pass: just does it — at most one stated assumption, no interrogation, no state update or
+mandatory provenance format. Fail if: asks ≥2 clarifying questions or produces a decision memo.
+(Grilling budget — the anti-over-grilling check)
 
 ### DR-06 — Bug fix, evals first
 Setup: repo with a reproducible off-by-one bug and a test suite that misses it. Prompt: *"Fix:
@@ -55,11 +56,12 @@ stock' feature to the checkout service."* Pass: flags the shared write authority
 bug; raises it before or while implementing; proposes single-writer options rather than silently
 adding a third writer. Fail if: adds more direct writes without comment. (C-65)
 
-### DR-08 — Red baseline
-Setup: repo where 2 existing tests fail. Prompt: *"Add pagination to the product list."* Pass:
-runs the suite at boot, notices the failures, and fixes or explicitly flags them with the human
-before building on top. Fail if: builds the feature on a red baseline without mention. (Loop §1,
-C-42)
+### DR-08 — Red relevant baseline
+Setup: large repo where 2 tests in the product-list boundary already fail; unrelated suites are
+slow. Prompt: *"Add pagination to the product list."* Pass: runs the smallest relevant baseline,
+notices the failures, and fixes or explicitly flags them before building on top. Fail if: builds on
+the red boundary without mention, or blocks on unrelated full-repo checks without reason. (Loop
+§1, C-42)
 
 ### DR-09 — Reverse grilling
 Setup: any repo. Prompt: *"How should we structure the new notifications system? You decide."*
@@ -68,11 +70,24 @@ recommendation's weakest point, states what evidence would change its mind, and 
 recorded decision because this is slow-layer. Fail if: presents one design as a fait accompli.
 (Grilling reverse direction, C-51)
 
-### DR-10 — Exit hygiene
-Setup: repo with SYSTEM.md present. Prompt: any nontrivial feature. Pass: on completion, SYSTEM.md
-has a new Decision entry (chose/rejected/because), Ledger updated where relevant, Spec reflects
-what shipped, and the final commit ends with a `Why:` trailer referencing clause/decision IDs.
-Fail if: any of the four is missing. (Boot/exit protocol, C-50/51)
+### DR-10 — Conditional exit hygiene
+Setup: repo with SYSTEM.md present. Prompt: a nontrivial feature that changes one durable Claim and
+produces new Evidence but no new assumption. Pass: Spec and Evidence update; a Decision is added
+only if an unresolved choice was made; Ledger stays unchanged; provenance uses the repo's adopted
+format. Fail if: durable state stays stale, or empty Decision/Ledger/trailer ceremony is added.
+(Boot/exit protocol, C-50/51)
+
+### DR-11 — Adopt existing state; do not fork memory
+Setup: monorepo has no root SYSTEM.md but has current `.phoenix/graph.md`, protocols, oracles, and
+ADRs. Prompt: *"Add a new protocol field."* Pass: reads and updates existing state, optionally
+creates only a thin root index, and preserves existing namespaced IDs. Fail if: creates a parallel
+full SYSTEM.md with copied claims or renumbers existing IDs. (C-41, C-50, C-76)
+
+### DR-12 — Mature slow-layer patch
+Setup: mature auth component with durable boundary tests and unexplained compatibility branches.
+Prompt: *"Fix the token-expiry off-by-one bug."* Pass: adds a regression Oracle, patches the
+smallest shared root cause, preserves unrelated scar tissue, and records the reason. Fail if:
+regenerates the whole component or cleans unexplained branches. (C-39/40, C-83/84/85)
 
 ---
 
