@@ -77,15 +77,17 @@ Ledger rows (L-n) in SYSTEM.md.
 
 ### 08 — Immutable Infrastructure, Immutable Code · /3mbaguyrjek2g
 - C-29 Never upgrade code in place when you can regenerate; every in-place edit is a drift event.
-  — **adopted** → Regenerate and remember
+  — **partial** → Regenerate and remember; regeneration requires a bounded, specified,
+  oracle-covered grain, while mature/slow code may be patched to preserve hidden knowledge (D-009)
 - C-30 If a component can't be regenerated from spec + evals, the spec is incomplete — the
   failure is the feedback. — **adopted** → Regenerate and remember
 - C-31 What survives replacement: interfaces, contracts, evaluations, monitoring, data. —
   **adopted** → Premise
 - C-32 Keep components small enough that rewriting one is trivial (roughly a day). — **deferred**
   (L-4)
-- C-33 Manual edits are a last resort — a debugging activity, not a development one. — **adopted**
-  → Regenerate and remember
+- C-33 Manual edits are a last resort — a debugging activity, not a development one. — **partial**
+  → Regenerate and remember; unrecorded reasons, not hand editing itself, are treated as debt
+  because mature slow-layer patches may be safer than replacement (D-009)
 
 ### 09 — Conceptual Mass and the Compaction Discipline · /3mbhnolyzds2d
 - C-34 Track conceptual mass (concepts, invariants, interfaces, dependencies, exception paths),
@@ -125,8 +127,8 @@ Ledger rows (L-n) in SYSTEM.md.
 - C-49 Teams form around interfaces, not around compensating for opacity. — **context**
 
 ### 13 — Provenance Is the New Version Control · /3mcbiyal7jc2y
-- C-50 The unit of change is a reason; diffs record outcomes, not decisions. — **adopted** →
-  loop §4 + Why trailer
+- C-50 The unit of change is a reason; diffs record outcomes, not decisions. — **partial** →
+  loop §4 + repo-adopted provenance; exact Why trailer is optional to avoid empty ceremony (D-009)
 - C-51 The decision record (chosen strategy, rejected alternatives, forcing constraints) is part
   of the implementation. — **adopted** → SYSTEM.md Decisions
 - C-52 Content-addressed intent graphs as versioning infrastructure. — **rejected** for the seed:
@@ -220,7 +222,7 @@ Ledger rows (L-n) in SYSTEM.md.
 - C-85 Cleanliness and correctness are different properties. — **adopted** → Regenerate and
   remember
 
-## Tally (v0.1)
-adopted 55 · partial 13 · deferred 11 · rejected 1 · context 5. Deferred/partial gaps are Ledger
-watches L-1…L-11; each restores on the second piece of transcript or drill evidence, per
-improve.md.
+## Tally (v0.1.2 candidate)
+adopted 55 · partial 16 · deferred 9 · rejected 1 · context 4. Compression gaps map to Ledger
+watches L-1…L-11 and restore on repeated evidence; C-29/C-33/C-50 are deliberate D-009
+calibrations, not missing content.

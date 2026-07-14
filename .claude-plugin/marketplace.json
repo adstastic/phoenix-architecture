@@ -8,8 +8,8 @@
     {
       "name": "phoenix-architecture",
       "source": "./",
-      "description": "Phoenix Architecture discipline for AI coding agents, inspired by Chad Fowler.",
-      "version": "0.1.1",
+      "description": "Phoenix Architecture discipline for AI coding agents: durable specs, evals, boundaries, provenance, and data.",
+      "version": "0.1.2",
       "author": {
         "name": "Adi"
       },

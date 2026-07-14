@@ -1,7 +1,7 @@
 {
   "name": "phoenix-architecture",
-  "version": "0.1.1",
-  "description": "Phoenix Architecture discipline for AI coding agents, inspired by Chad Fowler: specs, evals, boundaries, and provenance as durable artifacts.",
+  "version": "0.1.2",
+  "description": "Phoenix Architecture discipline for AI coding agents: specs, evals, boundaries, provenance, and data as durable artifacts.",
   "author": {
     "name": "Adi"
   },

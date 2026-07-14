@@ -23,11 +23,11 @@ or the review output):
 compaction must protect, per SYSTEM.md I4).
 
 **Attributions:** `skill-content` (rule missing or wrong) · `skill-salience` (rule present but
-not noticed/followed) · `repo-system-md` (target repo's state file was stale or thin) · `model`
-(capability limit) · `human` (input error/withheld context) · `hard-task` (genuinely difficult;
-no process fix). Attribute honestly — the loop dies if the skill absorbs blame for everything,
-bloating with rules about one-off quirks. Only `skill-content` and `skill-salience` events may
-drive SKILL.md changes.
+not noticed/followed) · `repo-state` (target repo's adopted durable state was stale, thin, or
+forked) · `model` (capability limit) · `human` (input error/withheld context) · `hard-task`
+(genuinely difficult; no process fix). Attribute honestly — the loop dies if the skill absorbs
+blame for one-off quirks. Only skill-attributed events, or repeated `repo-state` failures caused by
+the generic boot/template contract, may drive SKILL.md changes.
 
 ## Step 2 — Route each skill-attributed event
 
@@ -38,16 +38,17 @@ drive SKILL.md changes.
 - `skill-salience` events get salience fixes, not more words: reword for punch, move earlier,
   promote from a subsection into the work loop or safety rails, or add a trigger phrase to the
   frontmatter description. Adding length to fix salience usually worsens it.
-- `repo-system-md` events → improve the SYSTEM.md template or boot protocol text, same rules.
+- `repo-state` events → fix the target repo state; change the generic state template/boot rule only
+  when the same failure recurs across repos.
 - `impedance` events → generalize the prescription (e.g., "shadow or canary" → "compare against
   the incumbent by whatever means the environment allows") rather than adding environment
   special-cases.
 
-## Step 3 — Distill the failure into a drill
+## Step 3 — Preserve the scenario as a probe
 
-Before editing, write the regression: a new drill in drills.md reproducing the failing scenario
-(setup, prompt, pass conditions, fail-if), distilled from the transcript. If you can't state pass
-conditions, you don't yet understand the failure — return to Step 1.
+Before editing, add a probe to drills.md when the transcript exposes a reusable scenario. Record
+setup, prompt, expected behavior, and failure signal. The probe preserves why wording exists; it is
+not proof that one prompt caused or fixed behavior.
 
 ## Step 4 — Edit within budget
 
@@ -57,29 +58,30 @@ reactive invariants stay inline. Check CLAIMS.md: if the change adopts a deferre
 status and close the Ledger watch; if it diverges from the corpus, record the divergence as
 `rejected` with the reason.
 
-## Step 5 — Gate
+## Step 5 — Fidelity gate and behavioral observation
 
-Run **all** drills (old + new) with a cold agent per drill. Any failure → the edit doesn't ship
-(SYSTEM.md R4). Iterate on the edit, not the drill, unless the drill itself is wrong (that's a
-Decision too).
+For skill changes, rely on this repository's Git history as the source anchor; consuming-repo
+migrations record their own fidelity maps in their own state. Run relevant cold-agent probes when they add information;
+record model, context, repo snapshot, transcript, and observed misses. Probe output informs human
+judgment but does not mechanically validate the skill.
 
 ## Step 6 — Sign and record
 
-The skill is slow-layer: present the human the diff, the evidence events driving it, and the
-rejected alternatives; get an explicit decision. Then append a Decision entry to SYSTEM.md
+The skill is slow-layer: present the human the diff, source-fidelity map, observed transcript events,
+and rejected alternatives; get an explicit decision. Then append a Decision entry to SYSTEM.md
 (chose / rejected / because / evidence IDs / claims touched), update the Ledger, bump the version
-in the plugin manifest, and note drill results.
+in the plugin manifest, and note any probe observations without claiming proof.
 
 ## Step 7 — Compaction pass (every few cycles)
 
-Using accumulated `worked` marks and drill coverage: any SKILL.md passage never exercised across
-N transcripts and not covered by a drill is a deletion candidate. Delete per the normal rules —
-recorded, reversible via git, celebrated. The skill obeys its own loop §8.
+Using repeated transcript evidence plus probe history, identify passages that may no longer earn
+runtime weight. Delete only after source content is recoverable and its disposition is recorded;
+absence from a probe is not evidence that a rule is useless. The skill obeys its own loop §8.
 
 ---
 
 **Failure modes of this protocol itself** (watch for these in its early runs): absorbing
-`model`/`human` events into skill rules; fixing salience with length; editing without a distilled
-drill; letting the drill suite grow stale relative to CLAIMS.md; skipping the human gate because
-the diff "looks obviously right." Each of these is itself an evidence event — this file is
+`model`/`human` events into skill rules; fixing salience with length; migrating without archived
+source and complete mapping; treating a probe as proof; skipping the human gate because the diff
+"looks obviously right." Each of these is itself an evidence event — this file is
 regenerable by the same procedure.
