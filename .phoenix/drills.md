@@ -7,6 +7,8 @@ changed rule when useful; never treat one pass/fail or a synthetic aggregate as 
 Transcript failures may add probes that preserve the observed scenario.
 
 Setup convention: a small sample repo (any stack) with a test suite; vary per probe as noted.
+Give the cold agent a sandboxed COPY of SKILL.md only — never a path inside this repository, or
+the agent can read this catalog and the observation is no longer cold (leaked 2026-07-14, DR-05).
 
 ---
 

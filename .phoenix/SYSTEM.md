@@ -28,6 +28,9 @@ I1. Skill changes are slow-layer: source-fidelity-gated, explicit about behavior
     human-signed, and recorded as a Decision here.
 I2. No speculative rules: every addition cites a transcript event or drill failure (first
     occurrence → Ledger watch; second → change). Corpus fidelity gaps count as evidence via CLAIMS.
+I6. The work loop is exactly eight steps in this order — Orient, Calibrate, Grill proportionally,
+    Specify, Evals first, Choose change mode, Verify, Record and compact — with boot (read durable
+    state, baseline Oracle) and exit (update only changed durable state) as its bookends.
 I3. SKILL.md is the implementation; CLAIMS.md, Decisions, source archives/maps, and observed
     transcripts are the durable layer. SKILL.md should be regenerable from them (this skill's own
     deletion test).
@@ -119,6 +122,7 @@ live targets rots with every skill edit; the skill's own C-56 requires correctne
 without reference to history. Human decision: 2026-07-14 review of PR #1.
 
 ## Ledger (review every boot of the improvement loop)
+See `observations.md` for dated probe/regeneration observations.
 | ID   | Type       | Statement                                                                  | Check by   | Status |
 |------|------------|----------------------------------------------------------------------------|------------|--------|
 | L-1  | watch      | Named n=1 diagnostic dropped (C-06/C-47); restore on 2nd evidence           | 2026-10-08 | open |
@@ -134,3 +138,6 @@ without reference to history. Human decision: 2026-07-14 review of PR #1.
 | L-11 | watch      | Implementation graph + selective invalidation (C-82)                        | 2026-10-08 | open |
 | L-12 | superseded | Mandatory drill gate overstated prompt certainty; D-010 makes drills probes | 2026-07-10 | closed |
 | L-13 | assumption | ~3K tokens on non-trivial triggers is net-positive — verify via waste events in transcripts | 2026-10-08 | open |
+
+| L-12 | watch      | Pace-table rows/columns unpinned by state files (deletion test 2026-07-14)  | 2026-10-14 | open |
+| L-13 | watch      | Grilling budget dial (pace→question count) only probe-implied                | 2026-10-14 | open |
