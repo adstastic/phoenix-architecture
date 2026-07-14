@@ -59,11 +59,16 @@ For local development:
 pi install .
 ```
 
-## Skill internals
+## Layout
+
+The repo applies the plugin to itself: processing ships in `skills/` and `scripts/`; the plugin's
+own state lives in `.phoenix/`, and CI runs `node scripts/check.mjs .` against it.
 
 ```text
 skills/phoenix-architecture/
-  SKILL.md     runtime seed
+  SKILL.md     runtime seed (the only file agents auto-load)
+  records.md   record grammar reference for consuming repos
+.phoenix/
   SYSTEM.md    skill state: spec, decisions, ledger
   CLAIMS.md    corpus claim inventory
   drills.md    cold-agent behavioral probes
@@ -74,7 +79,7 @@ skills/phoenix-architecture/
 
 1. Work normally with the skill.
 2. Export a session transcript.
-3. Ask a fresh agent to run `skills/phoenix-architecture/improve.md` on the transcript.
+3. Ask a fresh agent to run `.phoenix/improve.md` on the transcript.
 4. Make minimal skill edits, record uncertainty as Decisions, and get human review.
 5. Treat behavioral probes as observations, not proof; validate package structure, then tag release.
 

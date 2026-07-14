@@ -198,10 +198,11 @@ deletion test. Expand only on evidence, and record each expansion as a Decision:
 - Use **fresh-agent probes** only as observations: give a cold agent a real task with this skill and
   record model, context, repo snapshot, transcript, and stumbles. A pass is not proof. Starter
   scenarios: `drills.md`.
-- **This folder self-hosts.** Siblings: `SYSTEM.md` (this skill's own state), `CLAIMS.md` (its spec
-  — every prescriptive corpus claim traced to a disposition), `drills.md` (behavioral probes), and
-  `improve.md` (its regeneration procedure). The predecessor skill's source lives in its own
-  repository (`adstastic/agent-skills` `phoenix/`); consuming repos record their own migration
+- **This plugin applies itself to its own repo.** Its state lives in repository `.phoenix/`:
+  `SYSTEM.md` (spec, decisions, ledger), `CLAIMS.md` (every prescriptive corpus claim traced to a
+  disposition), `drills.md` (behavioral probes), `improve.md` (its regeneration procedure). Record
+  grammar for consuming repos: sibling `records.md`. The predecessor skill's source lives in its
+  own repository (`adstastic/agent-skills` `phoenix/`); consuming repos record their own migration
   fidelity in their own state. Skill changes are slow-layer: uncertainty-explicit, human-signed,
   and recorded as Decisions.
 
