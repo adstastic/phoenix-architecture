@@ -43,6 +43,20 @@ function blocks(content, headingPattern) {
   }));
 }
 
+// Optional repo-specific config: .phoenix/checks.json. The checker is processing
+// (plugin-owned); this file is the repo's state about what extra strictness applies.
+// Keys (all optional): required_top_level [names], forbidden_paths [repo-relative],
+// stale_strings [literals], stale_scan_files [repo-relative], release_owner_labels
+// {OWNER: "Label"}, release_covers_all_oracles (bool).
+const config = has("checks.json") ? JSON.parse(read("checks.json")) : {};
+if (config.required_top_level) {
+  const actual = new Set(readdirSync(phoenix).filter((name) => name.endsWith(".md")));
+  equalSets(new Set(config.required_top_level), actual, "top-level .phoenix Markdown convention drifted");
+}
+for (const path of config.forbidden_paths ?? []) {
+  if (existsSync(join(root, path))) fail(`forbidden path exists: ${path}`);
+}
+
 const scanned = []; // [file, content] pairs for the loose-heading safety net
 const capturedIds = new Set();
 
@@ -140,6 +154,17 @@ for (const file of releaseFiles) {
 if (releaseFiles.length) {
   for (const claim of claimRecords.filter((record) => /Horizon: release_scoped\./.test(record.text))) {
     if (!releaseClaims.has(claim.id)) fail(`${claim.id} is release-scoped but absent from releases/`);
+  }
+  if (config.release_covers_all_oracles) {
+    equalSets(oracleIds, releaseOracles, "release Oracle composition drifted");
+  }
+  if (config.release_owner_labels) {
+    const labels = new Map(Object.entries(config.release_owner_labels));
+    for (const file of releaseFiles) {
+      for (const row of read(`releases/${file}`).matchAll(/^\| ([^|]+) \| `(ORACLE-([A-Z]+(?:-[A-Z]+)*)-\d{3})` \|$/gm)) {
+        if (row[1] !== labels.get(row[3])) fail(`${row[2]} has wrong release owner label: ${row[1]}`);
+      }
+    }
   }
 }
 
@@ -252,6 +277,20 @@ const looseHeading = /^#{2,3} +((?:CLAIM|ORACLE|BOUNDARY|D)-[A-Z]+(?:-[A-Z]+)*(?
 for (const [file, content] of scanned) {
   for (const match of content.matchAll(looseHeading)) {
     if (!capturedIds.has(match[1])) fail(`loose scan found uncaptured record heading ${match[1]} in ${file}`);
+  }
+}
+
+if (config.stale_strings?.length) {
+  const files = [
+    ...scanned.map(([file]) => join(phoenix, file)),
+    ...(config.stale_scan_files ?? []).map((file) => join(root, file)),
+  ];
+  for (const file of files) {
+    if (!existsSync(file)) fail(`stale-scan file missing: ${file}`);
+    const content = readFileSync(file, "utf8");
+    for (const literal of config.stale_strings) {
+      if (content.includes(literal)) fail(`stale live convention: ${literal} in ${file}`);
+    }
   }
 }
 
