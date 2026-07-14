@@ -209,6 +209,23 @@ if (has("evidence.md")) {
   );
   if (oracleIds.size && evidencedOracles.size) {
     equalSets(oracleIds, evidencedOracles, "Oracle↔Evidence status map drifted");
+  } else if (oracleIds.size) {
+    // No hand-written map: coverage is derived from source markers plus evidence mentions.
+    const markerCovered = new Set();
+    const skip = new Set(["node_modules", ".git", "dist", "build", ".phoenix", ".wrangler"]);
+    (function scan(dir) {
+      for (const entry of readdirSync(dir, { withFileTypes: true })) {
+        if (entry.isDirectory()) {
+          if (!skip.has(entry.name)) scan(join(dir, entry.name));
+        } else if (/\.(ts|mjs|js|py|go|rs|swift)$/.test(entry.name)) {
+          const content = readFileSync(join(dir, entry.name), "utf8");
+          for (const id of content.matchAll(/ORACLE-[A-Z]+(?:-[A-Z]+)*-\d{3}/g)) markerCovered.add(id[0]);
+        }
+      }
+    })(root);
+    const mentioned = new Set([...evidence.matchAll(/ORACLE-[A-Z]+(?:-[A-Z]+)*-\d{3}/g)].map((m) => m[0]));
+    const uncovered = [...oracleIds].filter((id) => !markerCovered.has(id) && !mentioned.has(id));
+    if (uncovered.length) fail(`Oracles with no source marker and no evidence entry: ${uncovered.join(", ")}`);
   }
   // ponytail: cited-path resolution tries repo root then one workspace level
   // (services/*/, apps/*/, packages/*/); repos with deeper layouts should cite
