@@ -200,8 +200,9 @@ deletion test. Expand only on evidence, and record each expansion as a Decision:
   scenarios: `drills.md`.
 - **This folder self-hosts.** Siblings: `SYSTEM.md` (this skill's own state), `CLAIMS.md` (its spec
   — every prescriptive corpus claim traced to a disposition), `drills.md` (behavioral probes), and
-  `improve.md` (its regeneration procedure). Exact migration sources and maps live under repository
-  `migrations/`, outside skill discovery. Skill changes are slow-layer: source-preserving,
-  uncertainty-explicit, human-signed, and recorded as Decisions.
+  `improve.md` (its regeneration procedure). The predecessor skill's source lives in its own
+  repository (`adstastic/agent-skills` `phoenix/`); consuming repos record their own migration
+  fidelity in their own state. Skill changes are slow-layer: uncertainty-explicit, human-signed,
+  and recorded as Decisions.
 
 *Synthesized from "The Phoenix Architecture" by Chad Fowler (aicoding.leaflet.pub, 2025–2026).*

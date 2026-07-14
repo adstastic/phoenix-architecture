@@ -93,19 +93,30 @@ Because: review against the complete source corpus and a 2,767-line production `
 showed duplicate-memory risk, missing Evidence/data structure, and conflict between early immutable-
 code rhetoric and the later Implementation Remembers warning. Human decision: requested directly
 in the 2026-07-10 review session. Clauses: R5, R6, I5, C-31, C-39, C-40, C-79, C-83.
-### D-010 — 2026-07-10 — Preserve migration sources; treat drills as probes
+### D-010 — 2026-07-10 — Preserve migration sources; treat drills as probes (superseded by D-012)
 Chose: archive the exact legacy skill bytes with SHA-256 hashes, a complete heading-level map, and
 explicit semantic-change markers; use drills only as behavioral observations. Rejected: deleting the old capture
 once compressed, relying on Git reachability alone, or treating one model run as proof. Because:
 semantic equivalence is not mechanically provable, but irrecoverable source loss and unmapped units
 are preventable. Human decision: preserve fidelity and data under future automated migrations.
-Clauses: R3, R4, I1, I3, I4.
+Clauses: R3, R4, I1, I3, I4. Superseded by D-012: the drills-as-probes half survives; the
+byte-archive half was reversed.
 ### D-011 — 2026-07-10 — Owner-based IDs; release and pace are metadata
 Chose: `TYPE-OWNER-NNN` IDs, component-owned Decision files, stable Oracle catalogs, and separate
 release manifests. Rejected: date-named Decision files and IDs containing release-specific topic
 slugs such as `ORACLE-R1-NATIVE-001`. Because: identity must survive wording and release changes;
 owner is the stable retrieval axis, while applicability, horizon, pace, and revisit triggers change
 independently. Human decision: simplify and harden the migrated state convention. Clauses: R6.
+### D-012 — 2026-07-14 — Repo records state; plugin owns processing; Git is the archive
+Chose: delete the in-tree legacy byte archive; anchor the predecessor at its own repository commit
+(`adstastic/agent-skills` `phoenix/` @ `c9d81b35b2d4`); ship a generic record-convention checker in
+`scripts/check.mjs` that consuming repos run against their own `.phoenix/` state; consuming repos
+record their own migration fidelity (commit anchors, ID rename maps, notable semantic changes).
+Rejected: in-tree source snapshots, SHA-256 manifests, per-unit mapping TSVs, and a standing
+archive checker (the D-010 apparatus). Because: every archived byte is permanently reachable in the
+predecessor repository, Git content-addresses it already, and an archive whose checker validates
+live targets rots with every skill edit; the skill's own C-56 requires correctness to be decidable
+without reference to history. Human decision: 2026-07-14 review of PR #1.
 
 ## Ledger (review every boot of the improvement loop)
 | ID   | Type       | Statement                                                                  | Check by   | Status |

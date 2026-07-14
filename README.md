@@ -15,7 +15,7 @@ The core artifact is one standards-compliant Agent Skill at `skills/phoenix-arch
 .agents/plugins/marketplace.json    Codex marketplace catalog
 package.json                        Pi package manifest
 skills/phoenix-architecture/        Shared Agent Skill
-migrations/legacy-phoenix-v1/       Inert legacy source, hashes, and fidelity map
+scripts/check.mjs                   Record-convention checker for consuming repos
 ```
 
 ## Install
@@ -75,16 +75,30 @@ skills/phoenix-architecture/
 1. Work normally with the skill.
 2. Export a session transcript.
 3. Ask a fresh agent to run `skills/phoenix-architecture/improve.md` on the transcript.
-4. Preserve source bytes/maps for migrations, make minimal skill edits, record uncertainty, and get
-   human review.
+4. Make minimal skill edits, record uncertainty as Decisions, and get human review.
 5. Treat behavioral probes as observations, not proof; validate package structure, then tag release.
 
-## Migration fidelity
+## Repo contract
 
-The legacy installed skill remains byte-for-byte recoverable outside `skills/` so harnesses cannot
-discover it as a second live skill. Verify archive hashes, complete file/heading mapping, notable
-semantic markers, and target existence with:
+The plugin owns Phoenix processing; a consuming repo only records state (`.phoenix/` records) for
+the plugin to process. The repo's `AGENTS.md` should ensure the plugin is installed:
+
+```markdown
+Durable state lives in `.phoenix/` and is processed by the phoenix-architecture plugin:
+`claude plugin marketplace add adstastic/phoenix-architecture && claude plugin install phoenix-architecture@phoenix-tools`
+```
+
+Validate a consuming repo's records locally or in CI (pin a tag in CI):
 
 ```bash
-node migrations/legacy-phoenix-v1/check.mjs
+node scripts/check.mjs /path/to/repo
+curl -fsSL https://raw.githubusercontent.com/adstastic/phoenix-architecture/<tag>/scripts/check.mjs | node - .
 ```
+
+## Predecessor
+
+This skill supersedes the v1 phoenix skill. Its exact source lives in its own repository —
+[`adstastic/agent-skills` `phoenix/` @ `c9d81b35b2d4`](https://github.com/adstastic/agent-skills/tree/c9d81b35b2d4/phoenix)
+— which is the recovery anchor; no bytes are duplicated here. Repos migrating from it record their
+own migration fidelity (commit anchors, ID rename maps, notable semantic changes) in their own
+state, as Phoenix prescribes.

@@ -60,8 +60,8 @@ status and close the Ledger watch; if it diverges from the corpus, record the di
 
 ## Step 5 — Fidelity gate and behavioral observation
 
-For source migrations, run the archived-source checker and review every non-identity mapping. No
-unmapped or hash-mismatched source ships. Run relevant cold-agent probes when they add information;
+For skill changes, rely on this repository's Git history as the source anchor; consuming-repo
+migrations record their own fidelity maps in their own state. Run relevant cold-agent probes when they add information;
 record model, context, repo snapshot, transcript, and observed misses. Probe output informs human
 judgment but does not mechanically validate the skill.
 
