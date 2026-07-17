@@ -12,8 +12,8 @@ explicit human decision.
 
 ## Spec
 ### Requirements
-R1. A cold agent with only SKILL.md, a target repo, and a human must complete the full work loop
-    end to end — no access to the source corpus required at runtime.
+R1. A cold agent with the installed plugin/package, a target repo, and a human must complete the
+    full work loop end to end — no access to the source corpus required at runtime.
 R2. SKILL.md loads whole when triggered; frontmatter description ≤1024 chars.
 R3. Every prescriptive corpus claim in CLAIMS.md carries a status (adopted / partial / deferred /
     rejected / context); no silent drops.
@@ -42,10 +42,11 @@ I5. State and provenance updates are proportional: tiny or already-covered work 
 E1. SKILL.md ≤ 250 lines (~3K tokens always-in-context on trigger). On breach: shed
     deliberate-procedure content to a reference file; reactive invariants stay inline (D-005).
 ### Contracts
-The Agent Skills standard (SKILL.md folder, name+description frontmatter) is the distribution
-contract with all harnesses. Repo-facing contract: durable-state adoption rules, SYSTEM.md index
-template, and repo-selected provenance forms defined in SKILL.md — changing them is a boundary
-change for every repo using the skill.
+The harness plugin/package is the distribution contract: it contains the standards-compliant
+SKILL.md folder plus `scripts/check.mjs`, and the skill resolves that checker relative to itself.
+Repo-facing contract: durable-state adoption rules, SYSTEM.md index template, checker conventions,
+and repo-selected provenance forms defined in SKILL.md — changing them is a boundary change for
+every repo using the skill.
 ### Non-goals
 Bundling the source essays (claims + URLs only). Harness-specific features. Claiming behavioral
 correctness from prompt probes. Prescribing models or tools.
@@ -120,6 +121,14 @@ archive checker (the D-010 apparatus). Because: every archived byte is permanent
 predecessor repository, Git content-addresses it already, and an archive whose checker validates
 live targets rots with every skill edit; the skill's own C-56 requires correctness to be decidable
 without reference to history. Human decision: 2026-07-14 review of PR #1.
+### D-013 — 2026-07-17 — Install the checker with the skill
+Chose: make the harness plugin/package the installation unit and have SKILL.md resolve the bundled
+checker at `../../scripts/check.mjs`, failing visibly when it is absent. Rejected: standalone skill
+copies that omit processing and fetching executable code remotely at runtime. Because: a direct
+skill install left agents able to write Phoenix records but unable to run the checker that D-012
+assigns to the plugin. This supersedes D-007's skill-folder-only distribution boundary while
+retaining one shared skill across harnesses. Human decision: approved directly on 2026-07-17.
+Clauses: R1, Contracts, D-012.
 
 ## Ledger (review every boot of the improvement loop)
 See `observations.md` for dated probe/regeneration observations.

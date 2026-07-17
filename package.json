@@ -1,6 +1,6 @@
 {
   "name": "phoenix-architecture",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Phoenix Architecture discipline for AI coding agents: specs, evals, boundaries, provenance, and data as durable artifacts.",
   "keywords": [
     "pi-package",

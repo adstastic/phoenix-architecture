@@ -4,11 +4,18 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdtempSync, mkdirSync, rmSync, writeFileSync, appendFileSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
 const checker = resolve(import.meta.dirname, "../scripts/check.mjs");
+const skill = resolve(import.meta.dirname, "../skills/phoenix-architecture/SKILL.md");
+
+test("the installed skill points to the plugin-owned checker", () => {
+  const checkerFromSkill = resolve(import.meta.dirname, "../skills/phoenix-architecture/../../scripts/check.mjs");
+  assert.equal(existsSync(checkerFromSkill), true);
+  assert.match(readFileSync(skill, "utf8"), /\.\.\/\.\.\/scripts\/check\.mjs/);
+});
 
 function fixtureRun(mutate) {
   const root = mkdtempSync(join(tmpdir(), "phoenix-fixture-"));
