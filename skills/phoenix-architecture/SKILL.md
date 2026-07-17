@@ -43,6 +43,16 @@ dated assumptions. At exit, update state only when a durable Claim, Boundary, Ev
 Decision, or Ledger item changed. Tiny and already-covered work skips state churn. Record why in
 the repo's adopted form: Decision ID, ADR/issue link, commit body, or optional `Why:` trailer.
 
+When a repo has `.phoenix/` records, run the checker bundled with this plugin after changing them
+and before claiming they are valid:
+
+```bash
+node <skill-directory>/../../scripts/check.mjs <repo-root>
+```
+
+Resolve `../../scripts/check.mjs` relative to this `SKILL.md`. If it is missing, stop and report an
+incomplete plugin/package installation; do not silently skip validation.
+
 Template:
 
 ```markdown

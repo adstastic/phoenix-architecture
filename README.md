@@ -4,7 +4,8 @@ Multi-harness agent skill for Chad Fowler's *Phoenix Architecture* / regenerativ
 
 Inspired by Chad Fowler's *The Phoenix Architecture* (https://aicoding.leaflet.pub). Not affiliated with or endorsed by Chad Fowler.
 
-The core artifact is one standards-compliant Agent Skill at `skills/phoenix-architecture/SKILL.md`. Harness-specific manifests make the same skill installable in Claude Code, Codex, and Pi without copying it.
+The core artifact is one standards-compliant Agent Skill plus its record checker. Harness-specific
+manifests install the same plugin/package payload in Claude Code, Codex, and Pi without copying it.
 
 ## Layout
 
@@ -41,16 +42,17 @@ codex plugin marketplace add adstastic/phoenix-architecture
 codex plugin add phoenix-architecture@phoenix-tools
 ```
 
-For direct skill development, symlink the shared skill:
+For local plugin development, add this checkout as a marketplace and install it:
 
 ```bash
-ln -s "$(pwd)/skills/phoenix-architecture" ~/.agents/skills/phoenix-architecture
+codex plugin marketplace add "$(pwd)"
+codex plugin add phoenix-architecture@phoenix-tools
 ```
 
 ### Pi
 
 ```bash
-pi install git:github.com/adstastic/phoenix-architecture@v0.1.2
+pi install git:github.com/adstastic/phoenix-architecture@v0.1.3
 ```
 
 For local development:
