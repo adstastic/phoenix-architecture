@@ -15,10 +15,9 @@ Do not reflow unchanged clauses when you update a record.
 Do not use tables for records whose fields can change independently.
 Fenced code blocks and literal command output are exempt.
 
-The checker rejects reliable violations.
-It rejects multiple known fields on one source line.
-It rejects semicolons in record prose.
-It does not try to parse English clauses.
+Use `phoenix-review-system` as the agent `manual_review_gate` for this semantic rule.
+The deterministic checker validates structural grammar and cross-references only.
+The deterministic checker does not judge English clauses.
 
 ## IDs
 
@@ -78,6 +77,7 @@ Owner boundary: `BOUNDARY-PAYMENTS`.
 Claim IDs: `CLAIM-PAYMENTS-001`.
 Kind: contract_test
 Pass criteria: A duplicate request returns the original capture result.
+Failure action: Block merge.
 ```
 
 ### Evidence
@@ -125,6 +125,7 @@ Status: open.
 
 Write each Decision field shown in the Decision example.
 Write `Pace:` on each Boundary.
+Write `Pass criteria:` and `Failure action:` on each Oracle.
 For records owned by a Boundary, Status defaults to `current`.
 For records owned by a Boundary, Horizon defaults to `durable`.
 For records owned by a Boundary, Pace defaults to the Boundary pace.

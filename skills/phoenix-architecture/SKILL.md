@@ -106,7 +106,7 @@ Check by: <date or trigger>.
 Status: <status>.
 ```
 
-Use semantic source lines in Phoenix Markdown.
+Use semantic source lines in Phoenix record Markdown.
 Put one independently reviewable clause or field on each physical line.
 Use one bullet or repeated field for each value when a field has multiple values.
 Do not connect clauses with semicolons or reflow unchanged clauses.
@@ -116,6 +116,7 @@ Keep root state short.
 Split by regenerative grain or monorepo component before root state becomes a catalog.
 Existing `.phoenix/` or ADR trees can stay as the detailed state.
 Prose about the present is a cache.
+Use `phoenix-review-system` as the agent `manual_review_gate` for state consistency and semantic source layout.
 Enforcement lives in Oracles and Evidence.
 
 ## The work loop
@@ -134,9 +135,9 @@ Enforcement lives in Oracles and Evidence.
    with sufficient specification, durable Oracles, isolated mutation, and rollback. Use wrap or
    strangler replacement when direct replacement risks hidden knowledge. In every mode: root cause
    over special-case, minimal public surface, no speculative abstractions.
-7. **Verify.** Oracles gate shipping; "it runs" is not acceptance. For live replacement, compare
-   behavior and cost against the incumbent by whatever mechanism the environment supports, with
-   rollback armed.
+7. **Verify.** Oracles gate shipping; "it runs" is not acceptance. Use `phoenix-review-rendering`
+   when acceptance needs independent conformance review. For live replacement, compare behavior
+   and cost against the incumbent by whatever mechanism the environment supports, with rollback armed.
 8. **Record and compact.** Update only durable state that changed, then remove dead Renderings,
    flags, and duplicate concepts after their rollback window. If conceptual mass grew faster than
    capability, compact before continuing.

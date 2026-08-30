@@ -1,10 +1,11 @@
 # Phoenix Architecture
 
-Multi-harness agent skill for Chad Fowler's *Phoenix Architecture* / regenerative software discipline.
+Multi-harness agent skills for Chad Fowler's *Phoenix Architecture* / regenerative software discipline.
 
 Inspired by Chad Fowler's *The Phoenix Architecture* (https://aicoding.leaflet.pub). Not affiliated with or endorsed by Chad Fowler.
 
-The core artifact is one standards-compliant Agent Skill at `skills/phoenix-architecture/SKILL.md`. Harness-specific manifests make the same skill installable in Claude Code, Codex, and Pi without copying it.
+The package ships one runtime discipline and two agent review gates.
+Harness-specific manifests install the same skills in Claude Code, Codex, and Pi without copies.
 
 ## Layout
 
@@ -14,8 +15,10 @@ The core artifact is one standards-compliant Agent Skill at `skills/phoenix-arch
 .codex-plugin/plugin.json           Codex plugin manifest
 .agents/plugins/marketplace.json    Codex marketplace catalog
 package.json                        Pi package manifest
-skills/phoenix-architecture/        Shared Agent Skill
-scripts/check.mjs                   Record-convention checker for consuming repos
+skills/phoenix-architecture/        Runtime discipline
+skills/phoenix-review-system/       Durable-state and doctrine review
+skills/phoenix-review-rendering/    Rendering-to-system review
+scripts/check.mjs                   Structural record checker for consuming repos
 ```
 
 ## Install
@@ -41,16 +44,18 @@ codex plugin marketplace add adstastic/phoenix-architecture
 codex plugin add phoenix-architecture@phoenix-tools
 ```
 
-For direct skill development, symlink the shared skill:
+For direct skill development, symlink all packaged skills:
 
 ```bash
-ln -s "$(pwd)/skills/phoenix-architecture" ~/.agents/skills/phoenix-architecture
+for skill in phoenix-architecture phoenix-review-system phoenix-review-rendering; do
+  ln -s "$(pwd)/skills/$skill" "$HOME/.agents/skills/$skill"
+done
 ```
 
 ### Pi
 
 ```bash
-pi install git:github.com/adstastic/phoenix-architecture@v0.1.3
+pi install git:github.com/adstastic/phoenix-architecture@v0.2.0
 ```
 
 For local development:
@@ -66,8 +71,12 @@ own state lives in `.phoenix/`, and CI runs `node scripts/check.mjs .` against i
 
 ```text
 skills/phoenix-architecture/
-  SKILL.md     runtime seed (the only file agents auto-load)
+  SKILL.md     runtime seed
   records.md   record grammar reference for consuming repos
+skills/phoenix-review-system/
+  SKILL.md     agent review of durable state and doctrine
+skills/phoenix-review-rendering/
+  SKILL.md     agent review of Renderings against durable state
 .phoenix/
   SYSTEM.md    skill state: spec, decisions, ledger
   CLAIMS.md    corpus claim inventory
@@ -93,7 +102,9 @@ Durable state lives in `.phoenix/` and is processed by the phoenix-architecture 
 `claude plugin marketplace add adstastic/phoenix-architecture && claude plugin install phoenix-architecture@phoenix-tools`
 ```
 
-Validate a consuming repo's records locally or in CI (pin a tag in CI):
+Validate deterministic record structure locally or in CI.
+Use `phoenix-review-system` for semantic state and source-layout review.
+Pin a tag in CI:
 
 ```bash
 node scripts/check.mjs /path/to/repo

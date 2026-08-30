@@ -123,6 +123,11 @@ if (has("oracles.md")) {
     if (!kinds.length || kinds.some((kind) => !allowedKinds.has(kind))) {
       fail(`${oracle.id} has invalid Kind: ${kinds.join(", ")}`);
     }
+    for (const field of ["Pass criteria", "Failure action"]) {
+      if (!new RegExp(`^${field}:[ \\t]*\\S`, "m").test(oracle.text)) {
+        fail(`${oracle.id} missing or empty ${field}`);
+      }
+    }
     for (const claimId of references) {
       if (claimIds.size && !claimIds.has(claimId)) fail(`${oracle.id} references missing ${claimId}`);
       claimsCovered.add(claimId);
@@ -269,56 +274,6 @@ if (has("evidence.md")) {
   }
 }
 
-// --- source layout ---------------------------------------------------------------
-// Keep independently reviewable facts on separate physical lines. English clause
-// parsing is ambiguous, so enforce only reliable failure signals here.
-const fieldLabels = [
-  "Applies from", "Approval", "Assumption", "Because", "Boundary rule", "Check by", "Chose",
-  "Claim IDs", "Claims", "Clauses", "Component", "Consumer contract", "Consumers", "Detailed state",
-  "Distribution contract", "Durability", "Evidence", "Evidence source", "Expected behavior", "Former ID",
-  "Horizon", "Human decision", "Invalidates", "Kind", "Migration/retention contract", "Non-goal",
-  "Observed at", "Observed value", "Oracle", "Owner boundary", "Pace", "Pass criteria", "Purpose",
-  "Reason", "Recorded", "Regeneration policy", "Rejected", "Rendering", "Rendering/commit",
-  "Repository contract", "Result", "Reversed choice", "Revisit when", "Review cadence", "Runtime",
-  "Self-hosted state", "Sole writer", "Source", "Source/window", "State", "Statement", "Status",
-  "Superseded by", "Surviving choice", "Threshold", "Type", "Valid until", "Window", "Writes",
-];
-const escapedFieldLabels = fieldLabels
-  .sort((left, right) => right.length - left.length)
-  .map((label) => label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-const fieldLabel = new RegExp(`\\b(?:${escapedFieldLabels.join("|")}):`, "g");
-const layoutSources = [...scanned];
-if (has("SYSTEM.md")) layoutSources.push(["SYSTEM.md", read("SYSTEM.md")]);
-const rootSystem = join(root, "SYSTEM.md");
-if (existsSync(rootSystem)) {
-  layoutSources.push(["../SYSTEM.md", readFileSync(rootSystem, "utf8")]);
-}
-const mutableSystemSections = new Set(["Data and mutation ownership", "Evidence", "Decisions", "Ledger"]);
-for (const [file, content] of layoutSources) {
-  let fenced = false;
-  let section = "";
-  for (const [index, line] of content.split("\n").entries()) {
-    if (/^\s*(?:```|~~~)/.test(line)) {
-      fenced = !fenced;
-      continue;
-    }
-    if (fenced) continue;
-    const sectionMatch = line.match(/^##(?!#)\s+(.+?)\s*$/);
-    if (sectionMatch) section = sectionMatch[1].replace(/\s+#+$/, "").trim();
-    if (/^\s*\|/.test(line)) {
-      if (file.endsWith("SYSTEM.md") && mutableSystemSections.has(section)) {
-        fail(`${file}:${index + 1} uses a table for mutable records`);
-      }
-      continue;
-    }
-    const prose = line.replace(/`[^`]*`/g, "");
-    if ([...prose.matchAll(fieldLabel)].length > 1) {
-      fail(`${file}:${index + 1} has multiple fields on one source line`);
-    }
-    if (prose.includes(";")) fail(`${file}:${index + 1} semicolon joins record prose`);
-  }
-}
-
 // --- loose-heading safety net ---------------------------------------------------
 // Strict block patterns require exact punctuation; a malformed record heading
 // must fail loudly instead of silently escaping validation (false-green is the
@@ -344,6 +299,10 @@ if (config.stale_strings?.length) {
   }
 }
 
+const canonicalRecords = boundaryIds.size + claimIds.size + oracleIds.size + decisionIds.size;
+const agentReviewNote = canonicalRecords === 0 && (has("SYSTEM.md") || existsSync(join(root, "SYSTEM.md")))
+  ? "; SYSTEM.md semantic review requires phoenix-review-system"
+  : "";
 console.log(
-  `Phoenix check passed: ${boundaryIds.size} Boundaries, ${claimIds.size} Claims, ${oracleIds.size} Oracles, ${decisionIds.size} Decisions`,
+  `Phoenix check passed: ${boundaryIds.size} Boundaries, ${claimIds.size} Claims, ${oracleIds.size} Oracles, ${decisionIds.size} Decisions${agentReviewNote}`,
 );

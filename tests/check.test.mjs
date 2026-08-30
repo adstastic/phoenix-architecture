@@ -23,7 +23,6 @@ function fixtureRun(mutate) {
 ### CLAIM-CORE-001: One claim
 
 Body.
-Command example: \`printf x; exit 0\`.
 
 Owner boundary: \`BOUNDARY-CORE\`.
 
@@ -48,6 +47,7 @@ Owner boundary: \`BOUNDARY-CORE\`.
 Kind: contract_test
 
 Pass criteria: it passes.
+Failure action: block merge.
 `,
     );
     writeFileSync(join(px, "releases", "r1.md"), "# R1\n\n`ORACLE-CORE-001` `CLAIM-CORE-001` `D-CORE-001`\n");
@@ -83,58 +83,6 @@ test("passes on a minimal valid tree", () => {
   assert.match(result.stdout, /Phoenix check passed/);
 });
 
-test("fails when a Decision packs fields onto one source line", () => {
-  const result = fixtureRun((root, px) => {
-    const path = join(px, "decisions", "core.md");
-    const content = readFileSync(path, "utf8").replace(
-      "Status: current.\nHorizon: durable.\nPace: slow.",
-      "Status: current. Horizon: durable. Pace: slow.",
-    );
-    writeFileSync(path, content);
-  });
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /multiple fields on one source line/);
-});
-
-for (const [record, fields] of [
-  ["Claim", "Statement: one. Owner boundary: `BOUNDARY-CORE`."],
-  ["Boundary", "Purpose: one. Sole writer: `items`."],
-  ["Oracle", "Kind: contract_test. Pass criteria: it passes."],
-  ["Evidence", "Rendering/commit: abc123. Result: pass."],
-  ["Ledger", "Type: watch. Check by: 2026-12-01."],
-]) {
-  test(`fails when ${record} fields share one source line`, () => {
-    const result = fixtureRun((root, px) => {
-      appendFileSync(join(px, "graph.md"), `\n${fields}\n`);
-    });
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /multiple fields on one source line/);
-  });
-}
-
-test("fails when SYSTEM.md uses a table for mutable records", () => {
-  const result = fixtureRun((root, px) => {
-    writeFileSync(join(px, "SYSTEM.md"), "# SYSTEM\n\n## Ledger ###  \n\n| ID | Status |\n|---|---|\n| L-1 | open |\n");
-  });
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /uses a table for mutable records/);
-});
-
-test("allows SYSTEM.md tables outside mutable record sections", () => {
-  const result = fixtureRun((root) => {
-    writeFileSync(join(root, "SYSTEM.md"), "# SYSTEM\n\n## Pace calibration\n\n| Layer | Pace |\n|---|---|\n| UI | fast |\n");
-  });
-  assert.equal(result.status, 0, result.stderr);
-});
-
-test("fails when record prose joins clauses with a semicolon", () => {
-  const result = fixtureRun((root, px) => {
-    appendFileSync(join(px, "graph.md"), "\nOne fact; another fact.\n");
-  });
-  assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /semicolon joins record prose/);
-});
-
 test("fails on a malformed record heading instead of silently dropping it", () => {
   const result = fixtureRun((root, px) => {
     appendFileSync(join(px, "graph.md"), "\n### CLAIM-CORE-999 heading missing its colon\n\nBody.\n");
@@ -152,6 +100,37 @@ test("fails when a Claim loses Oracle coverage", () => {
   });
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /coverage/);
+});
+
+test("fails when an Oracle has no failure action", () => {
+  const result = fixtureRun((root, px) => {
+    const path = join(px, "oracles.md");
+    writeFileSync(path, readFileSync(path, "utf8").replace("Failure action: block merge.\n", ""));
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /ORACLE-CORE-001 missing or empty Failure action/);
+});
+
+test("fails when an Oracle has an empty failure action", () => {
+  const result = fixtureRun((root, px) => {
+    const path = join(px, "oracles.md");
+    const content = readFileSync(path, "utf8").replace(
+      "Failure action: block merge.",
+      "Failure action:\nNext field: nonempty.",
+    );
+    writeFileSync(path, content);
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /ORACLE-CORE-001 missing or empty Failure action/);
+});
+
+test("fails when pass criteria are empty before a populated failure action", () => {
+  const result = fixtureRun((root, px) => {
+    const path = join(px, "oracles.md");
+    writeFileSync(path, readFileSync(path, "utf8").replace("Pass criteria: it passes.", "Pass criteria:"));
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /ORACLE-CORE-001 missing or empty Pass criteria/);
 });
 
 test("fails when an Oracle has neither marker nor evidence entry", () => {
