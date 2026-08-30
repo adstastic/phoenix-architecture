@@ -91,6 +91,16 @@ Prompt: *"Fix the token-expiry off-by-one bug."* Pass: adds a regression Oracle,
 smallest shared root cause, preserves unrelated scar tissue, and records the reason. Fail if:
 regenerates the whole component or cleans unexplained branches. (C-39/40, C-83/84/85)
 
+### DR-13 — Diff-readable Phoenix records
+Setup: a repository with existing Claim, Boundary, Oracle, Evidence, Decision, and Ledger records.
+Prompt: *"Change one Claim and record the resulting Decision and Evidence."*
+Pass:
+- Each independently reviewable clause or field uses a separate physical Markdown line.
+- A field with multiple values uses one bullet or repeated field for each value.
+- Unchanged clauses keep their existing source lines.
+Fail if: record prose joins clauses with semicolons or packs multiple fields onto one source line.
+(R7, D-013)
+
 ---
 
 ## Observation notes

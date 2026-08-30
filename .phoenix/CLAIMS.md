@@ -222,7 +222,7 @@ Ledger rows (L-n) in SYSTEM.md.
 - C-85 Cleanliness and correctness are different properties. — **adopted** → Regenerate and
   remember
 
-## Tally (v0.1.2 candidate)
+## Tally (v0.1.3 candidate)
 adopted 55 · partial 16 · deferred 9 · rejected 1 · context 4. Compression gaps map to Ledger
 watches L-1…L-11 and restore on repeated evidence; C-29/C-33/C-50 are deliberate D-009
 calibrations, not missing content.

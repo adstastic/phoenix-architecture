@@ -1,11 +1,29 @@
 # Phoenix record grammar
 
-Prescribed for consuming repos; load when writing or reviewing `.phoenix/` records. The repo holds
-state only — this grammar and its checker (`scripts/check.mjs`) live in the plugin.
+This grammar applies when an agent writes or reviews `.phoenix/` records.
+The repository holds state.
+The plugin owns this grammar and its checker at `scripts/check.mjs`.
+
+## Source layout
+
+Phoenix Markdown uses semantic source lines.
+Put one independently reviewable clause or field on each physical line.
+Keep a field label and one value on the same line.
+Use one bullet or repeated field for each value when a field has multiple values.
+Do not connect clauses with semicolons.
+Do not reflow unchanged clauses when you update a record.
+Do not use tables for records whose fields can change independently.
+Fenced code blocks and literal command output are exempt.
+
+The checker rejects reliable violations.
+It rejects multiple known fields on one source line.
+It rejects semicolons in record prose.
+It does not try to parse English clauses.
 
 ## IDs
 
-Stable IDs encode record type and owner, never release, date, pace, or descriptive wording:
+Stable IDs encode record type and owner.
+Stable IDs do not encode release, date, pace, or descriptive wording.
 
 ```text
 BOUNDARY-<OWNER>
@@ -14,43 +32,122 @@ ORACLE-<OWNER>-<NNN>
 D-<OWNER>-<NNN>
 ```
 
-Owner tokens come from Boundary IDs; `STATE` is the repository-state owner. Titles carry
-semantics. Release membership lives under `.phoenix/releases/`; dates and pace are metadata.
+Owner tokens come from Boundary IDs.
+`STATE` is the repository-state owner.
+Titles carry semantics.
+Release membership lives under `.phoenix/releases/`.
+Dates and pace are metadata.
 
 ## Core records
 
-Boundaries own Claims and mutation (each Boundary lists the logical datasets it exclusively
-writes); Oracles judge Claims; Renderings are current implementations identified by
-path/version/commit; Evidence is dated Oracle output; Decisions preserve chose/rejected/because;
-Ledger rows track temporary assumptions, drift, and planned checks. Contracts, datasets, pace,
-non-goals, and assumptions are fields or Claim types, not separate ID families.
+A Boundary owns Claims.
+A Boundary owns mutation for each listed logical dataset.
+An Oracle judges one or more Claims.
+A Rendering identifies the current implementation by path, version, or commit.
+Evidence records dated Oracle output.
+A Decision preserves choices, rejected alternatives, and reasons.
+A Ledger entry tracks one temporary assumption, drift item, or planned check.
+Contracts, datasets, pace, non-goals, and assumptions are fields or Claim types.
+They do not form more ID families.
+
+### Claim
+
+```markdown
+### CLAIM-PAYMENTS-001: Reject duplicate capture
+Statement: A payment request with a captured idempotency key returns the prior result.
+Owner boundary: `BOUNDARY-PAYMENTS`.
+Status: current.
+Horizon: durable.
+```
+
+### Boundary
+
+```markdown
+### BOUNDARY-PAYMENTS
+Purpose: Own payment capture behavior.
+Writes: `payment_attempts`.
+Pace: slow.
+Regeneration policy: human_reviewed, oracle_gated.
+```
+
+### Oracle
+
+```markdown
+## ORACLE-PAYMENTS-001 — Reject duplicate capture
+Owner boundary: `BOUNDARY-PAYMENTS`.
+Claim IDs: `CLAIM-PAYMENTS-001`.
+Kind: contract_test
+Pass criteria: A duplicate request returns the original capture result.
+```
+
+### Evidence
+
+```markdown
+### ORACLE-PAYMENTS-001 — 2026-08-30
+Oracle: `ORACLE-PAYMENTS-001`.
+Rendering: `abc1234`.
+Source: `node --test tests/payments.test.mjs`.
+Window: Test run on 2026-08-30.
+Observed value: 12 tests passed.
+Threshold: All tests pass.
+Result: pass.
+Observed at: 2026-08-30.
+Valid until: Payment capture Rendering changes.
+Invalidates: Payment capture Rendering.
+```
+
+### Decision
+
+```markdown
+### D-PAYMENTS-001 — Keep capture idempotent
+Recorded: 2026-08-30.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: The payment provider supplies equivalent idempotency guarantees.
+Chose: Store capture results by idempotency key.
+Rejected: Trust callers to prevent duplicate requests.
+Because: Network retries can repeat a valid request.
+```
+
+### Ledger entry
+
+```markdown
+### Ledger item L-1
+Type: assumption.
+Statement: Provider retry latency remains less than 30 seconds.
+Check by: 2026-11-30.
+Status: open.
+```
 
 ## Fields
 
-Defaults are `Status: current`, `Horizon: durable`, `Applies from:` the current release, and
-Boundary pace. Only overrides are written inline.
+Write each Decision field shown in the Decision example.
+Write `Pace:` on each Boundary.
+For records owned by a Boundary, Status defaults to `current`.
+For records owned by a Boundary, Horizon defaults to `durable`.
+For records owned by a Boundary, Pace defaults to the Boundary pace.
+For records owned by a Boundary, `Applies from:` defaults to the current release.
+Write only metadata overrides inline on records owned by a Boundary.
 
 - Status: `current | deferred | historical | superseded`
 - Horizon: `release_scoped | until_trigger | durable | exploratory`
 - Pace: `very_slow | slow | medium | fast`
-- Regeneration policy (Boundaries): combines `human_reviewed`, `oracle_gated`, `rare`
+- Regeneration policy uses one or more of `human_reviewed | oracle_gated | rare`.
 - Oracle Kind: `contract_test | static_check | snapshot_or_golden | integration_smoke | live_smoke | manual_review_gate`
 
-Required Decision fields:
-
-```text
-Recorded: <date>. Former ID: <id or none>.
-Status: … Horizon: … Pace: …
-Revisit when: <observable trigger>.
-```
-
-Keep chose/rejected/because prose under those fields. A superseding record gets a new ID and links
-both directions; never rewrite old rationale silently. Old IDs remain recoverable through each
-repo's migration fidelity record.
+A superseding Decision gets a new ID.
+The superseded Decision and new Decision reference each other.
+Do not rewrite superseded rationale silently.
+Superseded IDs stay recoverable through each repository's migration fidelity record.
 
 ## Coverage and evidence
 
-Executable Oracle coverage is derived from `// Oracle renderings: ORACLE-…` markers in source
-files; the checker fails any Oracle with neither a marker nor an evidence entry. Evidence files
-hold dated Oracle output and the non-executable coverage list only — Claim linkage lives on the
-Oracles, and anything derivable from code is derived, not hand-written.
+The checker derives executable Oracle coverage from `// Oracle renderings: ORACLE-…` markers in source files.
+The checker fails an Oracle that has no marker and no Evidence entry.
+Evidence files hold dated Oracle output.
+Evidence files can also hold a non-executable coverage list.
+Claim linkage lives on Oracles.
+Derive facts from code when code can supply them.
+Do not copy derived facts into records.

@@ -13,6 +13,6 @@
 - Deletion test (regenerate SKILL.md outline from CLAIMS + SYSTEM + drills + improve, real file
   forbidden): PARTIAL. Doctrine buckets regenerated cleanly; loop step 3 and the loop's exact
   scaffolding were unpinned (fixed: I6), pace-table rows/columns only fragmentarily pinned
-  (watch L-12), grilling budget dial inferred from two endpoints only (watch L-13).
+  (watch L-14), grilling budget dial inferred from two endpoints only (watch L-15).
 
 Per drills.md: observations, not proof. Model claude-fable-5; scenarios in session transcript.

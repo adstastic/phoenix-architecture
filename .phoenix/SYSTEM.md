@@ -1,143 +1,424 @@
 # SYSTEM
 
-> Scope note: this file describes **the phoenix-architecture skill itself** — it is the skill
-> dogfooding its own state protocol. It is not the SYSTEM.md of any repo you are working in.
+> Scope note: this file describes **the phoenix-architecture skill itself**.
+> It is the skill dogfooding its own state protocol.
+> It is not the SYSTEM.md of a repository that uses the skill.
 
 ## Map
-One component: the `phoenix-architecture` skill — a single always-loaded SKILL.md plus self-hosting
-siblings (CLAIMS.md its spec, drills.md its behavioral probes, improve.md its regeneration procedure).
-Consumers: coding agents in Claude Code, pi, and Codex (any harness implementing the Agent Skills
-standard). Pace layer: **slow** — its blast radius is every future session, so changes require an
-explicit human decision.
+Component: `phoenix-architecture` skill.
+Runtime: One always-loaded SKILL.md.
+Self-hosted state: CLAIMS.md, drills.md, improve.md, and this file.
+Consumers: Coding agents in Claude Code, pi, and Codex.
+Consumer contract: Any harness that implements the Agent Skills standard.
+Pace: slow.
+Reason: Each change affects future sessions.
+Approval: Each change requires an explicit human decision.
 
 ## Spec
+
 ### Requirements
-R1. A cold agent with only SKILL.md, a target repo, and a human must complete the full work loop
-    end to end — no access to the source corpus required at runtime.
-R2. SKILL.md loads whole when triggered; frontmatter description ≤1024 chars.
-R3. Every prescriptive corpus claim in CLAIMS.md carries a status (adopted / partial / deferred /
-    rejected / context); no silent drops.
-R4. Any source migration preserves exact source bytes, hashes them, maps every source file/heading,
-    and calls out notable semantic transformations with no silent drops.
-R5. Existing durable state (`.phoenix/`, ADRs, specs/evals, or equivalent) is adopted rather than
-    copied into a competing SYSTEM.md.
-R6. Repo state makes data ownership and dated Evidence first-class; stable IDs encode record type
-    and owner while release, date, horizon, and pace remain metadata.
+R1. A cold agent must complete the full work loop with only SKILL.md, a target repository, and a human.
+R1. The agent must not need the source corpus at runtime.
+R2. SKILL.md loads in full when triggered.
+R2. The frontmatter description is no more than 1,024 characters.
+R3. Each prescriptive corpus Claim in CLAIMS.md has a status.
+R3. Permitted statuses are adopted, partial, deferred, rejected, and context.
+R3. No corpus Claim disappears silently.
+R4. A source migration preserves exact source bytes.
+R4. A source migration hashes the source bytes.
+R4. A source migration maps each source file and heading.
+R4. A source migration records notable semantic transformations.
+R5. The skill adopts existing durable state such as `.phoenix/`, ADRs, specifications, and evaluations.
+R5. The skill does not copy existing state into a competing SYSTEM.md.
+R6. Repository state makes data ownership first-class.
+R6. Repository state makes dated Evidence first-class.
+R6. Stable IDs encode record type and owner.
+R6. Release, date, horizon, and pace stay as metadata.
+R7. Phoenix records put each independently reviewable clause or field on a separate physical Markdown line.
+
 ### Invariants
-I1. Skill changes are slow-layer: source-fidelity-gated, explicit about behavioral uncertainty,
-    human-signed, and recorded as a Decision here.
-I2. No speculative rules: every addition cites a transcript event or drill failure (first
-    occurrence → Ledger watch; second → change). Corpus fidelity gaps count as evidence via CLAIMS.
-I6. The work loop is exactly eight steps in this order — Orient, Calibrate, Grill proportionally,
-    Specify, Evals first, Choose change mode, Verify, Record and compact — with boot (read durable
-    state, baseline Oracle) and exit (update only changed durable state) as its bookends.
-I3. SKILL.md is the implementation; CLAIMS.md, Decisions, source archives/maps, and observed
-    transcripts are the durable layer. SKILL.md should be regenerable from them (this skill's own
-    deletion test).
-I4. Deletions from SKILL.md respect load-bearing marks: repeated "worked" transcript events and
-    behavioral probes are review signals, never proof by themselves.
-I5. State and provenance updates are proportional: tiny or already-covered work creates no empty
-    Decision, Ledger, or trailer ceremony.
+I1. Skill changes are slow-layer.
+I1. Skill changes pass a source-fidelity gate.
+I1. Skill changes state behavioral uncertainty.
+I1. Skill changes require human approval.
+I1. Skill changes produce a Decision in this file.
+I2. No speculative rule enters the skill.
+I2. Each addition cites a transcript event or drill failure.
+I2. A first event creates a Ledger watch.
+I2. A second event permits a change.
+I2. A CLAIMS.md fidelity gap counts as Evidence.
+I3. SKILL.md is the implementation.
+I3. CLAIMS.md, Decisions, source archives, source maps, and observed transcripts form the durable layer.
+I3. The durable layer must permit regeneration of SKILL.md.
+I4. Repeated worked transcript events mark load-bearing lines.
+I4. Behavioral probes mark load-bearing lines.
+I4. These signals do not prove correctness by themselves.
+I5. State updates are proportional.
+I5. Provenance updates are proportional.
+I5. Tiny or covered work creates no empty Decision, Ledger, or trailer ceremony.
+I6. The work loop has exactly eight ordered steps.
+I6. The steps are Orient, Calibrate, Grill proportionally, Specify, Evals first, Choose change mode, Verify, and Record and compact.
+I6. Boot reads durable state and runs a baseline Oracle.
+I6. Exit updates only changed durable state.
+
 ### Operational envelope
-E1. SKILL.md ≤ 250 lines (~3K tokens always-in-context on trigger). On breach: shed
-    deliberate-procedure content to a reference file; reactive invariants stay inline (D-005).
+E1. SKILL.md is no more than 250 lines.
+E1. The budget is approximately 3,000 always-loaded tokens.
+E1. A budget breach moves deliberate procedure to a reference file.
+E1. Reactive invariants stay inline under D-005.
+
 ### Contracts
-The Agent Skills standard (SKILL.md folder, name+description frontmatter) is the distribution
-contract with all harnesses. Repo-facing contract: durable-state adoption rules, SYSTEM.md index
-template, and repo-selected provenance forms defined in SKILL.md — changing them is a boundary
-change for every repo using the skill.
+Distribution contract: Agent Skills standard SKILL.md folder with name and description frontmatter.
+Supported harnesses: Claude Code, pi, and Codex.
+Repository contract: Durable-state adoption rules in SKILL.md.
+Repository contract: SYSTEM.md index template in SKILL.md.
+Repository contract: Repository-selected provenance forms in SKILL.md.
+Boundary rule: A contract change affects each repository that uses the skill.
+
 ### Non-goals
-Bundling the source essays (claims + URLs only). Harness-specific features. Claiming behavioral
-correctness from prompt probes. Prescribing models or tools.
+Non-goal: Bundle source essays.
+Non-goal: Add harness-specific features.
+Non-goal: Claim behavioral correctness from prompt probes.
+Non-goal: Prescribe models or tools.
+
 ### Scar tissue
-None yet — v0.1 has no production incidents. Expected to populate via improve.md.
+State: None.
+Reason: Version 0.1 has no production incidents.
+Source: Future incidents populate this section through improve.md.
 
-## Decisions (append-only)
-### D-001 — 2026-07-08 — Compress to a single-file seed
-Chose: one ~215-line SKILL.md. Rejected: 8-file skill + separate state-layer design (~1,100
-lines). Because: iteration speed and rule salience beat progressive disclosure at this maturity;
-deleted elaboration is re-derivable from principle. Clauses: E1, R1.
-### D-002 — 2026-07-08 — Self-host the improvement machinery in-folder
-Chose: CLAIMS.md, drills.md, improve.md, and this file as siblings. Rejected: bare seed with
-ad-hoc auditing. Because: siblings cost zero runtime context and make the loop mechanical from
-day one. Clauses: I3.
-### D-003 — 2026-07-08 — Restore exclusive mutation ownership inline
-Chose: one-sentence invariant in loop §2. Rejected: waiting for drill evidence. Because: the
-claims audit (C-65) showed an unrecorded drop of one of the corpus's most operational rules, and
-it is a reactive invariant by the firing-mode test. Clauses: I2 (CLAIMS gap as evidence), C-65.
-### D-004 — 2026-07-08 — Bundle a claim inventory, not the corpus
-Chose: CLAIMS.md (original synthesis + source URLs). Rejected: bundling essay texts. Because: the
-seed must stand alone at runtime; needing the corpus mid-task is a drill failure to fix; full-text
-redistribution of the essays isn't ours to do. Clauses: R1, R3, Non-goals.
-### D-005 — 2026-07-08 — Split criterion is firing mode, not SDLC phase
-Chose: reactive invariants stay always-loaded; deliberate procedures may move to references on
-budget breach. Rejected: per-phase reference files (the v1 axis). Because: phases interleave
-mid-session; always-loaded rules can't fail to load, only to fire. Clauses: E1.
-### D-006 — 2026-07-08 — Manual improvement cadence first
-Chose: run improve.md on demand per transcript. Rejected: automated every-N-sessions loop.
-Because: automate only what has become boring; the protocol needs its own drift shaken out first.
+## Decisions
+
+### D-001 — Compress to a single-file seed
+Recorded: 2026-07-08.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: A drill or transcript disproves the stated reasons.
+Chose: Use one approximately 215-line SKILL.md.
+Rejected: Use an eight-file skill and separate state-layer design of approximately 1,100 lines.
+Because: Iteration speed and rule salience beat progressive disclosure at this maturity.
+Because: Deleted elaboration is re-derivable from principle.
+Clauses: E1, R1.
+
+### D-002 — Self-host the improvement machinery in-folder
+Recorded: 2026-07-08.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: A drill or transcript disproves the stated reasons.
+Chose: Keep CLAIMS.md, drills.md, improve.md, and this file as siblings.
+Rejected: Use a bare seed with ad-hoc auditing.
+Because: Siblings cost zero runtime context.
+Because: Siblings make the loop mechanical from day one.
+Clauses: I3.
+
+### D-003 — Restore exclusive mutation ownership inline
+Recorded: 2026-07-08.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: A drill or transcript disproves the stated reasons.
+Chose: Add a one-sentence invariant in loop step 2.
+Rejected: Wait for drill evidence.
+Because: The claims audit at C-65 showed an unrecorded drop of an operational corpus rule.
+Because: The firing-mode test classifies the rule as a reactive invariant.
+Evidence: The CLAIMS gap counts as Evidence under I2.
+Clauses: I2, C-65.
+
+### D-004 — Bundle a Claim inventory, not the corpus
+Recorded: 2026-07-08.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: A drill or transcript disproves the stated reasons.
+Chose: Bundle CLAIMS.md with the original synthesis and source URLs.
+Rejected: Bundle essay texts.
+Because: The seed must stand alone at runtime.
+Because: A need for the corpus during work is a drill failure.
+Because: We do not own the right to redistribute the full essay texts.
+Clauses: R1, R3, Non-goals.
+
+### D-005 — Split on firing mode, not SDLC phase
+Recorded: 2026-07-08.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: A drill or transcript disproves the stated reasons.
+Chose: Keep reactive invariants always loaded.
+Chose: Move deliberate procedures to references when the runtime budget requires it.
+Rejected: Use reference files for each SDLC phase.
+Because: Phases interleave during a session.
+Because: An always-loaded rule can fail to fire but cannot fail to load.
+Clauses: E1.
+
+### D-006 — Start with manual improvement cadence
+Recorded: 2026-07-08.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: A drill or transcript disproves the stated reasons.
+Chose: Run improve.md on demand for each transcript.
+Rejected: Automate the loop after every fixed number of sessions.
+Because: Automate only a process that has become boring.
+Because: The protocol must expose its own drift first.
 Clauses: I1.
-### D-007 — 2026-07-08 — Distribute as one standards-compliant skill folder
-Chose: Agent Skills standard folder + thin Claude Code plugin manifest. Rejected: per-harness
-builds. Because: Claude Code, pi, and Codex all implement the same SKILL.md standard (verified
-2026-07-08); one artifact, three installs. Clauses: Contracts.
-### D-008 — 2026-07-08 — Rename package to Phoenix Architecture
-Chose: `phoenix-architecture` for repo, package, plugin, and skill names. Rejected:
-`regenerative-sdlc` as too bland and under-attributed, and `phoenix` as overloaded. Because: the
-name should point to Chad Fowler's Phoenix Architecture while remaining specific enough for package
-and skill discovery. Clauses: Contracts.
-### D-009 — 2026-07-10 — Adopt existing state and calibrate regeneration
-Chose: treat SYSTEM.md as an optional thin index over existing durable state; restore
-Claim/Boundary/Oracle/Rendering/Evidence vocabulary; require data ownership and full Evidence
-fields; patch mature/slow Renderings and regenerate only bounded, oracle-covered grains; make state
-updates and provenance format proportional. Rejected: unconditional SYSTEM.md creation, whole-suite
-boot checks, regeneration-first edits, and mandatory Decision/Ledger/Why records for every change.
-Because: review against the complete source corpus and a 2,767-line production `.phoenix/` state
-showed duplicate-memory risk, missing Evidence/data structure, and conflict between early immutable-
-code rhetoric and the later Implementation Remembers warning. Human decision: requested directly
-in the 2026-07-10 review session. Clauses: R5, R6, I5, C-31, C-39, C-40, C-79, C-83.
-### D-010 — 2026-07-10 — Preserve migration sources; treat drills as probes (superseded by D-012)
-Chose: archive the exact legacy skill bytes with SHA-256 hashes, a complete heading-level map, and
-explicit semantic-change markers; use drills only as behavioral observations. Rejected: deleting the old capture
-once compressed, relying on Git reachability alone, or treating one model run as proof. Because:
-semantic equivalence is not mechanically provable, but irrecoverable source loss and unmapped units
-are preventable. Human decision: preserve fidelity and data under future automated migrations.
-Clauses: R3, R4, I1, I3, I4. Superseded by D-012: the drills-as-probes half survives; the
-byte-archive half was reversed.
-### D-011 — 2026-07-10 — Owner-based IDs; release and pace are metadata
-Chose: `TYPE-OWNER-NNN` IDs, component-owned Decision files, stable Oracle catalogs, and separate
-release manifests. Rejected: date-named Decision files and IDs containing release-specific topic
-slugs such as `ORACLE-R1-NATIVE-001`. Because: identity must survive wording and release changes;
-owner is the stable retrieval axis, while applicability, horizon, pace, and revisit triggers change
-independently. Human decision: simplify and harden the migrated state convention. Clauses: R6.
-### D-012 — 2026-07-14 — Repo records state; plugin owns processing; Git is the archive
-Chose: delete the in-tree legacy byte archive; anchor the predecessor at its own repository commit
-(`adstastic/agent-skills` `phoenix/` @ `c9d81b35b2d4`); ship a generic record-convention checker in
-`scripts/check.mjs` that consuming repos run against their own `.phoenix/` state; consuming repos
-record their own migration fidelity (commit anchors, ID rename maps, notable semantic changes).
-Rejected: in-tree source snapshots, SHA-256 manifests, per-unit mapping TSVs, and a standing
-archive checker (the D-010 apparatus). Because: every archived byte is permanently reachable in the
-predecessor repository, Git content-addresses it already, and an archive whose checker validates
-live targets rots with every skill edit; the skill's own C-56 requires correctness to be decidable
-without reference to history. Human decision: 2026-07-14 review of PR #1.
 
-## Ledger (review every boot of the improvement loop)
-See `observations.md` for dated probe/regeneration observations.
-| ID   | Type       | Statement                                                                  | Check by   | Status |
-|------|------------|----------------------------------------------------------------------------|------------|--------|
-| L-1  | watch      | Named n=1 diagnostic dropped (C-06/C-47); restore on 2nd evidence           | 2026-10-08 | open |
-| L-2  | watch      | False-layers + dependency heuristic + pipeline-per-layer dropped (C-09/10/11)| 2026-10-08 | open |
-| L-3  | watch      | Gradient of trust / quarantine-messy-code shaping dropped (C-20/21)         | 2026-10-08 | open |
-| L-4  | watch      | Rewrite-in-a-day component size heuristic dropped (C-32)                    | 2026-10-08 | open |
-| L-5  | watch      | Dumb-architecture guidance: few interaction models, no shared tables (C-37/66)| 2026-10-08 | open |
-| L-6  | watch      | Yield metrics tracking dropped (C-58)                                       | 2026-10-08 | open |
-| L-7  | watch      | Four of five grain tests compressed away (C-61/62, C-18)                    | 2026-10-08 | open |
-| L-8  | watch      | Explicit architecture-as-compilation-target layer (C-64)                    | 2026-10-08 | open |
-| L-9  | watch      | Multi-candidate generation, multi-representation specs, LLM-as-judge (C-72/73/75) | 2026-10-08 | open |
-| L-10 | watch      | Boundary-change protocol: additive, versioned, slow deprecation (C-78)      | 2026-10-08 | open |
-| L-11 | watch      | Implementation graph + selective invalidation (C-82)                        | 2026-10-08 | open |
-| L-12 | superseded | Mandatory drill gate overstated prompt certainty; D-010 makes drills probes | 2026-07-10 | closed |
-| L-13 | assumption | ~3K tokens on non-trivial triggers is net-positive — verify via waste events in transcripts | 2026-10-08 | open |
+### D-007 — Distribute one standards-compliant skill folder
+Recorded: 2026-07-08.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: A supported harness stops using the Agent Skills standard.
+Chose: Use one Agent Skills standard folder with a thin Claude Code plugin manifest.
+Rejected: Create builds for each harness.
+Because: Claude Code, pi, and Codex implement the same SKILL.md standard.
+Because: One artifact supports three installs.
+Evidence: Harness support verified on 2026-07-08.
+Clauses: Contracts.
 
-| L-12 | watch      | Pace-table rows/columns unpinned by state files (deletion test 2026-07-14)  | 2026-10-14 | open |
-| L-13 | watch      | Grilling budget dial (pace→question count) only probe-implied                | 2026-10-14 | open |
+### D-008 — Rename package to Phoenix Architecture
+Recorded: 2026-07-08.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: The name no longer identifies the discipline or package clearly.
+Chose: Use `phoenix-architecture` for repository, package, plugin, and skill names.
+Rejected: Use `regenerative-sdlc` because it is bland and under-attributed.
+Rejected: Use `phoenix` because it is overloaded.
+Because: The name points to Chad Fowler's Phoenix Architecture.
+Because: The name is specific enough for package and skill discovery.
+Clauses: Contracts.
+
+### D-009 — Adopt existing state and calibrate regeneration
+Recorded: 2026-07-10.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: Production use disproves the adopted-state or regeneration rules.
+Chose: Treat SYSTEM.md as an optional thin index over existing durable state.
+Chose: Restore Claim, Boundary, Oracle, Rendering, and Evidence vocabulary.
+Chose: Require data ownership and full Evidence fields.
+Chose: Patch mature or slow Renderings.
+Chose: Regenerate only bounded and Oracle-covered grains.
+Chose: Keep state updates and provenance proportional.
+Rejected: Create SYSTEM.md unconditionally.
+Rejected: Run the full suite at boot.
+Rejected: Regenerate before patching.
+Rejected: Require Decision, Ledger, and Why records for every change.
+Because: Complete corpus review showed a duplicate-memory risk.
+Because: Production state review showed missing Evidence and data structure.
+Because: Immutable-code rhetoric conflicted with the later Implementation Remembers warning.
+Evidence: Review included a 2,767-line production `.phoenix/` state.
+Human decision: Requested directly in the 2026-07-10 review session.
+Clauses: R5, R6, I5, C-31, C-39, C-40, C-79, C-83.
+
+### D-010 — Preserve migration sources and treat drills as probes
+Recorded: 2026-07-10.
+Former ID: none.
+Status: superseded.
+Horizon: durable.
+Pace: slow.
+Revisit when: D-012 no longer supplies a valid source-recovery path.
+Superseded by: D-012.
+Chose: Archive the exact legacy skill bytes with SHA-256 hashes.
+Chose: Create a complete heading-level map.
+Chose: Record explicit semantic changes.
+Chose: Use drills only as behavioral observations.
+Rejected: Delete the old capture after compression.
+Rejected: Rely on Git reachability alone.
+Rejected: Treat one model run as proof.
+Because: Semantic equivalence is not mechanically provable.
+Because: Irrecoverable source loss is preventable.
+Because: Unmapped units are preventable.
+Human decision: Preserve fidelity and data under future automated migrations.
+Surviving choice: Drills remain behavioral probes.
+Reversed choice: D-012 reversed the byte archive.
+Clauses: R3, R4, I1, I3, I4.
+
+### D-011 — Use owner-based IDs with release and pace metadata
+Recorded: 2026-07-10.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: Stable retrieval no longer follows Boundary ownership.
+Chose: Use `TYPE-OWNER-NNN` IDs.
+Chose: Keep Decision files with their owning component.
+Chose: Use stable Oracle catalogs.
+Chose: Use separate release manifests.
+Rejected: Use date-named Decision files.
+Rejected: Put release-specific topic slugs such as `ORACLE-R1-NATIVE-001` in IDs.
+Because: Identity must survive wording and release changes.
+Because: Owner is the stable retrieval axis.
+Because: Applicability, horizon, pace, and revisit triggers change independently.
+Human decision: Simplify and harden the migrated state convention.
+Clauses: R6.
+
+### D-012 — Repo records state, plugin owns processing, and Git is the archive
+Recorded: 2026-07-14.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: Git can no longer recover the predecessor source accurately.
+Chose: Delete the in-tree legacy byte archive.
+Chose: Anchor the predecessor at `adstastic/agent-skills` `phoenix/` commit `c9d81b35b2d4`.
+Chose: Ship a generic record-convention checker in `scripts/check.mjs`.
+Chose: Make consuming repositories run the checker against their own `.phoenix/` state.
+Chose: Make consuming repositories record their own migration fidelity.
+Rejected: Keep in-tree source snapshots.
+Rejected: Keep SHA-256 manifests.
+Rejected: Keep mapping TSV files for each unit.
+Rejected: Keep a standing archive checker.
+Because: All archived bytes stay reachable in the predecessor repository.
+Because: Git already content-addresses the bytes.
+Because: An archive checker that validates live targets rots after skill edits.
+Because: C-56 requires correctness to be decidable without history.
+Human decision: 2026-07-14 review of PR #1.
+
+### D-013 — Use semantic source lines
+Recorded: 2026-08-30.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
+Revisit when: Reviewers cannot isolate changed Phoenix facts in source diffs.
+Chose: Put each independently reviewable clause or field on a separate physical Markdown line.
+Chose: Put the rule in the always-loaded skill and the detailed record grammar.
+Chose: Make the checker reject packed fields and semicolon-joined record prose.
+Chose: Migrate self-hosted records to the new source layout.
+Rejected: Duplicate the format rule across agent-skills consumers.
+Rejected: Parse English to count clauses.
+Because: The Phoenix Architecture repository owns the installed record format.
+Because: Structural checks can reject objective violations without guessing sentence meaning.
+Because: A behavioral probe covers the broader semantic outcome.
+Evidence: Direct human report that packed Decision, Claim, and Boundary prose obscured source diffs.
+Human decision: Direct request on 2026-08-30 to fix the format and open a pull request.
+Clauses: R7.
+
+## Ledger
+Review cadence: Each boot of the improvement loop.
+Evidence source: `observations.md`.
+
+### L-1
+Type: watch.
+Statement: The named n=1 diagnostic is absent.
+Claims: C-06, C-47.
+Revisit when: A second Evidence event supports restoration.
+Check by: 2026-10-08.
+Status: open.
+
+### L-2
+Type: watch.
+Statement: The false-layers heuristic is absent.
+Statement: The dependency-direction heuristic is absent.
+Statement: The pipeline-for-each-layer heuristic is absent.
+Claims: C-09, C-10, C-11.
+Check by: 2026-10-08.
+Status: open.
+
+### L-3
+Type: watch.
+Statement: Gradient-of-trust guidance is absent.
+Statement: Guidance to quarantine messy code is absent.
+Claims: C-20, C-21.
+Check by: 2026-10-08.
+Status: open.
+
+### L-4
+Type: watch.
+Statement: The rewrite-in-a-day component-size heuristic is absent.
+Claims: C-32.
+Check by: 2026-10-08.
+Status: open.
+
+### L-5
+Type: watch.
+Statement: Guidance for few interaction models is absent.
+Statement: Guidance against shared tables is absent.
+Claims: C-37, C-66.
+Check by: 2026-10-08.
+Status: open.
+
+### L-6
+Type: watch.
+Statement: Yield-metric tracking is absent.
+Claims: C-58.
+Check by: 2026-10-08.
+Status: open.
+
+### L-7
+Type: watch.
+Statement: Four of five grain tests are absent.
+Claims: C-18, C-61, C-62.
+Check by: 2026-10-08.
+Status: open.
+
+### L-8
+Type: watch.
+Statement: The explicit architecture-as-compilation-target layer is absent.
+Claims: C-64.
+Check by: 2026-10-08.
+Status: open.
+
+### L-9
+Type: watch.
+Statement: Multi-candidate generation is absent.
+Statement: Multi-representation specifications are absent.
+Statement: LLM-as-judge guidance is absent.
+Claims: C-72, C-73, C-75.
+Check by: 2026-10-08.
+Status: open.
+
+### L-10
+Type: watch.
+Statement: The Boundary-change protocol is absent.
+Expected behavior: Additive and versioned change with slow deprecation.
+Claims: C-78.
+Check by: 2026-10-08.
+Status: open.
+
+### L-11
+Type: watch.
+Statement: The implementation graph and selective invalidation are absent.
+Claims: C-82.
+Check by: 2026-10-08.
+Status: open.
+
+### L-12
+Type: superseded.
+Statement: A mandatory drill gate overstated prompt certainty.
+Because: D-010 treats drills as probes.
+Check by: 2026-07-10.
+Status: closed.
+
+### L-13
+Type: assumption.
+Statement: Approximately 3,000 tokens on non-trivial triggers produce a net benefit.
+Revisit when: Transcript waste events disprove the assumption.
+Check by: 2026-10-08.
+Status: open.
+
+### L-14
+Former ID: L-12.
+Type: watch.
+Statement: State files do not pin pace-table rows and columns.
+Evidence: Deletion test on 2026-07-14.
+Check by: 2026-10-14.
+Status: open.
+
+### L-15
+Former ID: L-13.
+Type: watch.
+Statement: Only probe results imply the pace-to-question-count budget.
+Check by: 2026-10-14.
+Status: open.
