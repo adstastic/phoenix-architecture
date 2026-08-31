@@ -1,7 +1,7 @@
 {
   "name": "phoenix-architecture",
-  "version": "0.1.2",
-  "description": "Phoenix Architecture discipline for AI coding agents: specs, evals, boundaries, provenance, and data as durable artifacts.",
+  "version": "0.2.0",
+  "description": "Phoenix Architecture discipline and agent review gates for durable specs, evals, boundaries, provenance, and data.",
   "keywords": [
     "pi-package",
     "agent-skills",
@@ -13,6 +13,14 @@
     "type": "git",
     "url": "git+https://github.com/adstastic/phoenix-architecture.git"
   },
+  "files": [
+    ".agents/plugins/marketplace.json",
+    ".claude-plugin",
+    ".codex-plugin",
+    "README.md",
+    "scripts/check.mjs",
+    "skills"
+  ],
   "pi": {
     "skills": ["./skills"]
   }

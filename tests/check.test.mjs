@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { cpSync, mkdtempSync, mkdirSync, rmSync, writeFileSync, appendFileSync } from "node:fs";
+import { cpSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync, appendFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -30,7 +30,8 @@ Owner boundary: \`BOUNDARY-CORE\`.
 
 Owns everything.
 
-Pace: slow. Regeneration policy: oracle_gated.
+Pace: slow.
+Regeneration policy: oracle_gated.
 `,
     );
     writeFileSync(
@@ -46,6 +47,7 @@ Owner boundary: \`BOUNDARY-CORE\`.
 Kind: contract_test
 
 Pass criteria: it passes.
+Failure action: block merge.
 `,
     );
     writeFileSync(join(px, "releases", "r1.md"), "# R1\n\n`ORACLE-CORE-001` `CLAIM-CORE-001` `D-CORE-001`\n");
@@ -55,11 +57,16 @@ Pass criteria: it passes.
 
 ### D-CORE-001 — A decision
 
-Recorded: 2026-07-14. Former ID: none.
-Status: current. Horizon: durable. Pace: slow.
+Recorded: 2026-07-14.
+Former ID: none.
+Status: current.
+Horizon: durable.
+Pace: slow.
 Revisit when: never needed again.
 
-Chose: x. Rejected: y. Because: z.
+Chose: x.
+Rejected: y.
+Because: z.
 `,
     );
     writeFileSync(join(px, "evidence.md"), "# Evidence\n\n| ORACLE-CORE-001 | dated output | implemented |\n");
@@ -93,6 +100,37 @@ test("fails when a Claim loses Oracle coverage", () => {
   });
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /coverage/);
+});
+
+test("fails when an Oracle has no failure action", () => {
+  const result = fixtureRun((root, px) => {
+    const path = join(px, "oracles.md");
+    writeFileSync(path, readFileSync(path, "utf8").replace("Failure action: block merge.\n", ""));
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /ORACLE-CORE-001 missing or empty Failure action/);
+});
+
+test("fails when an Oracle has an empty failure action", () => {
+  const result = fixtureRun((root, px) => {
+    const path = join(px, "oracles.md");
+    const content = readFileSync(path, "utf8").replace(
+      "Failure action: block merge.",
+      "Failure action:\nNext field: nonempty.",
+    );
+    writeFileSync(path, content);
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /ORACLE-CORE-001 missing or empty Failure action/);
+});
+
+test("fails when pass criteria are empty before a populated failure action", () => {
+  const result = fixtureRun((root, px) => {
+    const path = join(px, "oracles.md");
+    writeFileSync(path, readFileSync(path, "utf8").replace("Pass criteria: it passes.", "Pass criteria:"));
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /ORACLE-CORE-001 missing or empty Pass criteria/);
 });
 
 test("fails when an Oracle has neither marker nor evidence entry", () => {

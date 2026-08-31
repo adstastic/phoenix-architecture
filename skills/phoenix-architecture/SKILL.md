@@ -49,35 +49,75 @@ Template:
 # SYSTEM
 
 ## Map
-What this software is and for whom. One line per component: purpose, pace, and
-pointer to detailed state. In a monorepo this file is an index, not a duplicate.
+<Component>: <purpose>.
+Pace: <pace>.
+Detailed state: <pointer>.
 
 ## Spec
-Use owner-based stable IDs: `BOUNDARY-<OWNER>`, `CLAIM-<OWNER>-<NNN>`,
-`ORACLE-<OWNER>-<NNN>`, `D-<OWNER>-<NNN>`. Titles carry meaning; release, date, horizon,
-and pace are metadata, never identity. Oracles reference Claims explicitly.
+Use owner-based stable IDs:
+- `BOUNDARY-<OWNER>`
+- `CLAIM-<OWNER>-<NNN>`
+- `ORACLE-<OWNER>-<NNN>`
+- `D-<OWNER>-<NNN>`
+Titles carry meaning.
+Release, date, horizon, and pace are metadata.
+Oracles reference Claims explicitly.
 ### Requirements / Invariants / Operational envelope / Non-goals / Scar tissue
-Observable Claims; UNKNOWN-ORIGIN behavior stays pinned by characterization.
+Write one observable Claim per line.
+Pin UNKNOWN-ORIGIN behavior with characterization.
 ### Contracts
-Pointers to versioned schemas and interfaces.
+Put one versioned schema or interface pointer per line.
 
 ## Data and mutation ownership
-Dataset | sole writer | durability | migration/retention contract
+### <dataset>
+Sole writer: <Boundary>.
+Durability: <durability>.
+Migration/retention contract: <contract>.
 
 ## Evidence
-Oracle | rendering/commit | result | observed at | valid until | invalidates
+### <Oracle> — Evidence
+Rendering/commit: <rendering>.
+Source: <source>.
+Window: <window>.
+Observed value: <value>.
+Threshold: <threshold>.
+Result: <result>.
+Observed at: <date>.
+Valid until: <date or trigger>.
+Invalidates: <target>.
 
 ## Decisions
-Group by owning component/Boundary. Record status, horizon, applicability, pace, revisit trigger,
-supersession, chose/rejected/because; keep only current summary here.
+### <Decision ID> — <title>
+Recorded: <date>.
+Former ID: <id or none>.
+Status: <status>.
+Horizon: <horizon>.
+Pace: <pace>.
+Revisit when: <observable trigger>.
+Chose: <one choice>.
+Rejected: <one alternative>.
+Because: <one reason>.
 
 ## Ledger
-ID | assumption/planned/drift | statement | check by | status
+### <ID>
+Type: <assumption, planned work, or drift>.
+Statement: <one fact>.
+Check by: <date or trigger>.
+Status: <status>.
 ```
 
-Keep root state short. Split by regenerative grain or monorepo component before it becomes a
-catalog; existing `.phoenix/` or ADR trees may remain the detailed state. Prose about the present is
-a cache — enforcement lives in Oracles and Evidence.
+Use semantic source lines in Phoenix record Markdown.
+Put one independently reviewable clause or field on each physical line.
+Use one bullet or repeated field for each value when a field has multiple values.
+Do not connect clauses with semicolons or reflow unchanged clauses.
+Code blocks and literal command output are exempt.
+
+Keep root state short.
+Split by regenerative grain or monorepo component before root state becomes a catalog.
+Existing `.phoenix/` or ADR trees can stay as the detailed state.
+Prose about the present is a cache.
+Use `phoenix-review-system` as the agent `manual_review_gate` for state consistency and semantic source layout.
+Enforcement lives in Oracles and Evidence.
 
 ## The work loop
 
@@ -95,9 +135,9 @@ a cache — enforcement lives in Oracles and Evidence.
    with sufficient specification, durable Oracles, isolated mutation, and rollback. Use wrap or
    strangler replacement when direct replacement risks hidden knowledge. In every mode: root cause
    over special-case, minimal public surface, no speculative abstractions.
-7. **Verify.** Oracles gate shipping; "it runs" is not acceptance. For live replacement, compare
-   behavior and cost against the incumbent by whatever mechanism the environment supports, with
-   rollback armed.
+7. **Verify.** Oracles gate shipping; "it runs" is not acceptance. Use `phoenix-review-rendering`
+   when acceptance needs independent conformance review. For live replacement, compare behavior
+   and cost against the incumbent by whatever mechanism the environment supports, with rollback armed.
 8. **Record and compact.** Update only durable state that changed, then remove dead Renderings,
    flags, and duplicate concepts after their rollback window. If conceptual mass grew faster than
    capability, compact before continuing.

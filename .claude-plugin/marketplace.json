@@ -8,8 +8,8 @@
     {
       "name": "phoenix-architecture",
       "source": "./",
-      "description": "Phoenix Architecture discipline for AI coding agents: durable specs, evals, boundaries, provenance, and data.",
-      "version": "0.1.2",
+      "description": "Phoenix Architecture discipline and agent review gates for durable specs, evals, boundaries, provenance, and data.",
+      "version": "0.2.0",
       "author": {
         "name": "Adi"
       },

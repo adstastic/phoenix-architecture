@@ -123,6 +123,11 @@ if (has("oracles.md")) {
     if (!kinds.length || kinds.some((kind) => !allowedKinds.has(kind))) {
       fail(`${oracle.id} has invalid Kind: ${kinds.join(", ")}`);
     }
+    for (const field of ["Pass criteria", "Failure action"]) {
+      if (!new RegExp(`^${field}:[ \\t]*\\S`, "m").test(oracle.text)) {
+        fail(`${oracle.id} missing or empty ${field}`);
+      }
+    }
     for (const claimId of references) {
       if (claimIds.size && !claimIds.has(claimId)) fail(`${oracle.id} references missing ${claimId}`);
       claimsCovered.add(claimId);
@@ -294,6 +299,10 @@ if (config.stale_strings?.length) {
   }
 }
 
+const canonicalRecords = boundaryIds.size + claimIds.size + oracleIds.size + decisionIds.size;
+const agentReviewNote = canonicalRecords === 0 && (has("SYSTEM.md") || existsSync(join(root, "SYSTEM.md")))
+  ? "; SYSTEM.md semantic review requires phoenix-review-system"
+  : "";
 console.log(
-  `Phoenix check passed: ${boundaryIds.size} Boundaries, ${claimIds.size} Claims, ${oracleIds.size} Oracles, ${decisionIds.size} Decisions`,
+  `Phoenix check passed: ${boundaryIds.size} Boundaries, ${claimIds.size} Claims, ${oracleIds.size} Oracles, ${decisionIds.size} Decisions${agentReviewNote}`,
 );
