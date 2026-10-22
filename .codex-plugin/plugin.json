@@ -1,6 +1,7 @@
 {
   "name": "phoenix-architecture",
   "version": "0.2.0",
+  "license": "MIT",
   "description": "Phoenix Architecture discipline and agent review gates for durable specs, evals, boundaries, provenance, and data.",
   "author": {
     "name": "Adi"
